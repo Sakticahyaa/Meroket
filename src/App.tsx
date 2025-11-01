@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate, useParams, useLocation } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useParams, useLocation, useNavigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { Login } from './components/Login';
 import { Register } from './components/Register';
 import { Dashboard } from './components/Dashboard';
-import { ImmersivePortfolioEditor } from './components/ImmersivePortfolioEditor';
+import NewPortfolioEditor from './components/NewPortfolioEditor';
 import { PortfolioView } from './components/PortfolioView';
+import { NewPortfolioData } from './lib/supabase';
 
 // Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -107,6 +108,7 @@ function PortfolioRoute() {
 // Main Dashboard Component with Editor functionality
 function DashboardApp() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { portfolioId } = useParams<{ portfolioId: string }>();
   const [view, setView] = useState<'dashboard' | 'editor'>('dashboard');
   const [editingPortfolioId, setEditingPortfolioId] = useState<string | undefined>();
@@ -125,15 +127,23 @@ function DashboardApp() {
     }
   }, [location.pathname, portfolioId]);
 
+  const handleSave = async (data: NewPortfolioData) => {
+    console.log('Saving portfolio:', data);
+    // TODO: Implement save logic to database
+    alert('Portfolio saved! (Database integration coming soon)');
+    navigate('/dashboard');
+  };
+
+  const handleCancel = () => {
+    navigate('/dashboard');
+  };
+
   if (view === 'editor') {
     return (
-      <ImmersivePortfolioEditor
-        portfolioId={editingPortfolioId}
-        onBack={() => {
-          window.history.pushState({}, '', '/dashboard');
-          setView('dashboard');
-          setEditingPortfolioId(undefined);
-        }}
+      <NewPortfolioEditor
+        initialData={editingPortfolioId ? undefined : undefined} // TODO: Load portfolio data if editing
+        onSave={handleSave}
+        onCancel={handleCancel}
       />
     );
   }

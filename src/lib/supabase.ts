@@ -90,3 +90,105 @@ export type PreviewData = {
     }>;
   }>;
 };
+
+// New Section-based types
+export type SectionType = 'hero' | 'about' | 'skills' | 'projects' | 'testimonials' | 'contact';
+
+export type HeroSection = {
+  type: 'hero';
+  backgroundType: 'color' | 'gradient' | 'image';
+  backgroundColor?: string;
+  gradientStart?: string;
+  gradientEnd?: string;
+  gradientDirection?: 'horizontal' | 'vertical' | 'diagonal';
+  backgroundImage?: string;
+  title: string;
+  subtitle: string;
+  titleColor: string;
+  subtitleColor: string;
+};
+
+export type AboutSection = {
+  type: 'about';
+  title: string;
+  description: string;
+  image?: string;
+  imageShape: 'circle' | 'square' | 'rounded' | 'hexagon' | 'triangle';
+  imageBorder: boolean;
+  borderColor?: string;
+};
+
+export type SkillCard = {
+  id: string;
+  title: string;
+  description: string;
+  icon?: string;
+  iconType: 'image' | 'lucide';
+};
+
+export type SkillsSection = {
+  type: 'skills';
+  title: string;
+  cards: SkillCard[];
+};
+
+export type ProjectCard = {
+  id: string;
+  title: string;
+  shortDescription: string;
+  fullDescription: string;
+  image?: string;
+  tags?: string[];
+};
+
+export type ProjectsSection = {
+  type: 'projects';
+  title: string;
+  cards: ProjectCard[];
+};
+
+export type TestimonialCard = {
+  id: string;
+  text: string;
+  author: string;
+  role?: string;
+};
+
+export type TestimonialsSection = {
+  type: 'testimonials';
+  title: string;
+  cards: TestimonialCard[];
+};
+
+export type ContactSection = {
+  type: 'contact';
+  title: string;
+  method: 'email' | 'whatsapp';
+  email?: string;
+  whatsappNumber?: string;
+  showForm: boolean;
+};
+
+export type PortfolioSection =
+  | HeroSection
+  | AboutSection
+  | SkillsSection
+  | ProjectsSection
+  | TestimonialsSection
+  | ContactSection;
+
+export type NewPortfolioData = {
+  id?: string;
+  user_id?: string;
+  slug: string;
+  is_published: boolean;
+  sections: PortfolioSection[];
+  theme: {
+    primaryColor: string;
+    secondaryColor: string;
+    headingColor: string;
+    bodyColor: string;
+  };
+  created_at?: string;
+  updated_at?: string;
+};
