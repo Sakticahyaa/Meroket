@@ -6,7 +6,7 @@ import { Register } from './components/Register';
 import { Dashboard } from './components/Dashboard';
 import NewPortfolioEditor from './components/NewPortfolioEditor';
 import { PortfolioView } from './components/PortfolioView';
-import { NewPortfolioData } from './lib/supabase';
+import { NewPortfolioData, supabase } from './lib/supabase';
 
 // Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -105,10 +105,65 @@ function PortfolioRoute() {
   return <PortfolioView slug={slug} />;
 }
 
+// Standalone Editor Route
+function EditorRoute() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleSave = async (data: NewPortfolioData, publish: boolean) => {
+    if (!user) {
+      alert('You must be logged in to save a portfolio');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      // Save to database
+      const portfolioToSave = {
+        user_id: user.id,
+        slug: data.slug,
+        is_published: publish,
+        portfolio_data: JSON.stringify({
+          sections: data.sections,
+          theme: data.theme,
+        }),
+      };
+
+      const { data: savedData, error } = data.id
+        ? await supabase
+            .from('portfolios_v2')
+            .update(portfolioToSave)
+            .eq('id', data.id)
+            .select()
+            .single()
+        : await supabase
+            .from('portfolios_v2')
+            .insert(portfolioToSave)
+            .select()
+            .single();
+
+      if (error) throw error;
+
+      alert(publish ? 'Portfolio published successfully!' : 'Portfolio saved as draft!');
+      navigate('/dashboard');
+    } catch (error: any) {
+      console.error('Error saving portfolio:', error);
+      alert(`Failed to save portfolio: ${error.message}`);
+    }
+  };
+
+  const handleCancel = () => {
+    navigate('/dashboard');
+  };
+
+  return <NewPortfolioEditor onSave={handleSave} onCancel={handleCancel} />;
+}
+
 // Main Dashboard Component with Editor functionality
 function DashboardApp() {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
   const { portfolioId } = useParams<{ portfolioId: string }>();
   const [view, setView] = useState<'dashboard' | 'editor'>('dashboard');
   const [editingPortfolioId, setEditingPortfolioId] = useState<string | undefined>();
@@ -127,11 +182,46 @@ function DashboardApp() {
     }
   }, [location.pathname, portfolioId]);
 
-  const handleSave = async (data: NewPortfolioData) => {
-    console.log('Saving portfolio:', data);
-    // TODO: Implement save logic to database
-    alert('Portfolio saved! (Database integration coming soon)');
-    navigate('/dashboard');
+  const handleSave = async (data: NewPortfolioData, publish: boolean) => {
+    if (!user) {
+      alert('You must be logged in to save a portfolio');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      // Save to database
+      const portfolioToSave = {
+        user_id: user.id,
+        slug: data.slug,
+        is_published: publish,
+        portfolio_data: JSON.stringify({
+          sections: data.sections,
+          theme: data.theme,
+        }),
+      };
+
+      const { data: savedData, error } = editingPortfolioId
+        ? await supabase
+            .from('portfolios_v2')
+            .update(portfolioToSave)
+            .eq('id', editingPortfolioId)
+            .select()
+            .single()
+        : await supabase
+            .from('portfolios_v2')
+            .insert(portfolioToSave)
+            .select()
+            .single();
+
+      if (error) throw error;
+
+      alert(publish ? 'Portfolio published successfully!' : 'Portfolio saved as draft!');
+      navigate('/dashboard');
+    } catch (error: any) {
+      console.error('Error saving portfolio:', error);
+      alert(`Failed to save portfolio: ${error.message}`);
+    }
   };
 
   const handleCancel = () => {
@@ -192,6 +282,11 @@ function AppRoutes() {
       <Route path="/dashboard/edit/:portfolioId" element={
         <ProtectedRoute>
           <DashboardApp />
+        </ProtectedRoute>
+      } />
+      <Route path="/editor" element={
+        <ProtectedRoute>
+          <EditorRoute />
         </ProtectedRoute>
       } />
 

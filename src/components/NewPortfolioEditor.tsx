@@ -12,7 +12,7 @@ import {
 
 interface NewPortfolioEditorProps {
   initialData?: NewPortfolioData;
-  onSave: (data: NewPortfolioData) => Promise<void>;
+  onSave: (data: NewPortfolioData, publish: boolean) => Promise<void>;
   onCancel: () => void;
 }
 
@@ -138,8 +138,8 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
     setSelectedSectionIndex(index + 1);
   };
 
-  const handleSave = async () => {
-    await onSave(portfolioData);
+  const handleSave = async (publish: boolean) => {
+    await onSave({ ...portfolioData, is_published: publish }, publish);
   };
 
   return (
@@ -192,7 +192,13 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
             Cancel
           </button>
           <button
-            onClick={handleSave}
+            onClick={() => handleSave(false)}
+            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
+          >
+            Save Draft
+          </button>
+          <button
+            onClick={() => handleSave(true)}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
           >
             Save & Publish
