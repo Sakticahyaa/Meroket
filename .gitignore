@@ -25,3 +25,5 @@ dist-ssr
 # Development notes and setup instructions
 setup-notes/
 conversation_log.txt
+.bolt/
+.claude/
