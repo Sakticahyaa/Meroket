@@ -454,13 +454,23 @@ export function SkillsEditor({
 export function ProjectsEditor({
   section,
   onChange,
+  currentProjectCount = 0,
+  maxProjects = 100,
 }: {
   section: ProjectsSection;
   onChange: (section: ProjectsSection) => void;
+  currentProjectCount?: number;
+  maxProjects?: number;
 }) {
   const [editingCard, setEditingCard] = useState<string | null>(null);
 
   const addCard = () => {
+    // Check project limit
+    if (currentProjectCount >= maxProjects) {
+      alert(`You've reached your project card limit (${maxProjects}). Please upgrade your plan to add more.`);
+      return;
+    }
+
     const newCard: ProjectCard = {
       id: Date.now().toString(),
       title: 'New Project',

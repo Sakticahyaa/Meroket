@@ -490,6 +490,8 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                 <ProjectsEditor
                   section={portfolioData.sections[selectedSectionIndex] as any}
                   onChange={(updated) => updateSection(selectedSectionIndex, updated)}
+                  currentProjectCount={totalProjectCards}
+                  maxProjects={tierLimits.projects}
                 />
               )}
               {portfolioData.sections[selectedSectionIndex].type === 'testimonials' && (
