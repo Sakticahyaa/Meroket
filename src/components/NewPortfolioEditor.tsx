@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Plus, Monitor, Smartphone, Trash2, ChevronUp, ChevronDown, AlertCircle } from 'lucide-react';
 import { NewPortfolioData, PortfolioSection, SectionType, TIER_LIMITS } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
-import { canAddSection, countTotalProjectCards, getTierBadge } from '../lib/tierUtils';
+import { canAddSection, countTotalProjectCards, getTierBadge, shouldFreezeDueToLimits } from '../lib/tierUtils';
+import { FrozenPortfolioNotice } from './FrozenPortfolioNotice';
 import {
   HeroEditor,
   AboutEditor,
@@ -41,6 +42,14 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
   const tierLimits = TIER_LIMITS[userTier];
   const tierBadge = getTierBadge(userTier);
   const totalProjectCards = countTotalProjectCards(portfolioData.sections);
+
+  // Check if portfolio should be frozen
+  const freezeCheck = shouldFreezeDueToLimits(
+    portfolioData.sections.length,
+    totalProjectCards,
+    userTier
+  );
+  const isFrozen = portfolioData.is_frozen || freezeCheck.shouldFreeze;
 
   // Helper function to generate gradient CSS
   const getGradientCSS = (start: string, end: string, direction: 'horizontal' | 'vertical' | 'diagonal') => {
@@ -154,8 +163,17 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
   };
 
   const handleSave = async (publish: boolean) => {
+    if (isFrozen) {
+      alert('This portfolio is frozen and cannot be saved or published. Please check the notice for details.');
+      return;
+    }
     await onSave({ ...portfolioData, is_published: publish }, publish);
   };
+
+  // Show frozen notice if portfolio is frozen
+  if (isFrozen) {
+    return <FrozenPortfolioNotice userTier={userTier} reason={freezeCheck.reason} />;
+  }
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">
