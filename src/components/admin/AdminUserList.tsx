@@ -9,6 +9,10 @@ export function AdminUserList() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterTier, setFilterTier] = useState<UserTier | 'all'>('all');
   const [expandedUserId, setExpandedUserId] = useState<string | null>(null);
+  const [schedulingTier, setSchedulingTier] = useState<UserTier | null>(null);
+  const [scheduleStartDate, setScheduleStartDate] = useState('');
+  const [scheduleEndDate, setScheduleEndDate] = useState('');
+  const [isPermanent, setIsPermanent] = useState(true);
 
   useEffect(() => {
     loadUsers();
@@ -41,17 +45,49 @@ export function AdminUserList() {
   });
 
   const handleTierChange = async (userId: string, profileId: string, newTier: UserTier) => {
-    const confirmMessage = `Are you sure you want to change this user's tier to ${newTier.toUpperCase()}?`;
+    setSchedulingTier(newTier);
+    setScheduleStartDate('');
+    setScheduleEndDate('');
+    setIsPermanent(true);
+  };
+
+  const handleScheduleTierChange = async (userId: string, profileId: string) => {
+    if (!schedulingTier) return;
+
+    // Validation
+    if (!isPermanent) {
+      if (!scheduleStartDate) {
+        alert('Please select a start date');
+        return;
+      }
+      if (!scheduleEndDate) {
+        alert('Please select an end date');
+        return;
+      }
+      if (new Date(scheduleEndDate) <= new Date(scheduleStartDate)) {
+        alert('End date must be after start date');
+        return;
+      }
+    }
+
+    const confirmMessage = isPermanent
+      ? `Change user's tier to ${schedulingTier.toUpperCase()} permanently?`
+      : `Change user's tier to ${schedulingTier.toUpperCase()} from ${scheduleStartDate} to ${scheduleEndDate}?`;
+
     if (!confirm(confirmMessage)) return;
 
     try {
+      const now = new Date().toISOString();
+      const startDate = isPermanent ? now : new Date(scheduleStartDate).toISOString();
+      const endDate = isPermanent ? null : new Date(scheduleEndDate).toISOString();
+
       // Update user tier
       const { error: updateError } = await supabase
         .from('profiles')
         .update({
-          user_tier: newTier,
-          tier_scheduled_at: new Date().toISOString(),
-          tier_expires_at: null, // null means permanent
+          user_tier: schedulingTier,
+          tier_scheduled_at: startDate,
+          tier_expires_at: endDate,
         })
         .eq('id', profileId);
 
@@ -61,10 +97,16 @@ export function AdminUserList() {
       const user = users.find((u) => u.id === profileId);
       if (user) {
         const tierHierarchy = { free: 0, pro: 1, hyper: 2 };
-        if (tierHierarchy[newTier] < tierHierarchy[user.user_tier]) {
-          await applyTierDemotion(userId, newTier);
+        if (tierHierarchy[schedulingTier] < tierHierarchy[user.user_tier]) {
+          await applyTierDemotion(userId, schedulingTier);
         }
       }
+
+      // Reset state
+      setSchedulingTier(null);
+      setScheduleStartDate('');
+      setScheduleEndDate('');
+      setIsPermanent(true);
 
       // Reload users
       await loadUsers();
@@ -73,6 +115,13 @@ export function AdminUserList() {
       console.error('Error updating tier:', error);
       alert(`Failed to update tier: ${error.message}`);
     }
+  };
+
+  const handleCancelScheduling = () => {
+    setSchedulingTier(null);
+    setScheduleStartDate('');
+    setScheduleEndDate('');
+    setIsPermanent(true);
   };
 
   if (loading) {
@@ -205,17 +254,21 @@ export function AdminUserList() {
                   {isExpanded && (
                     <tr>
                       <td colSpan={5} className="px-6 py-4 bg-slate-50">
-                        <div className="max-w-2xl">
+                        <div className="max-w-3xl">
                           <h4 className="font-medium text-slate-900 mb-3">Change User Tier</h4>
-                          <div className="grid grid-cols-3 gap-3">
+
+                          {/* Tier Selection */}
+                          <div className="grid grid-cols-3 gap-3 mb-4">
                             <button
                               onClick={() => handleTierChange(user.id, user.id, 'free')}
                               disabled={user.user_tier === 'free'}
                               className={`px-4 py-3 rounded-lg border-2 transition-all ${
-                                user.user_tier === 'free'
+                                schedulingTier === 'free'
                                   ? 'border-slate-500 bg-slate-500 text-white'
+                                  : user.user_tier === 'free'
+                                  ? 'border-slate-300 bg-slate-100 text-slate-400'
                                   : 'border-slate-200 hover:border-slate-500 text-slate-700'
-                              } disabled:opacity-50`}
+                              } disabled:opacity-50 disabled:cursor-not-allowed`}
                             >
                               <div className="font-medium">Free</div>
                               <div className="text-xs mt-1">1 portfolio, 5 sections</div>
@@ -224,10 +277,12 @@ export function AdminUserList() {
                               onClick={() => handleTierChange(user.id, user.id, 'pro')}
                               disabled={user.user_tier === 'pro'}
                               className={`px-4 py-3 rounded-lg border-2 transition-all ${
-                                user.user_tier === 'pro'
+                                schedulingTier === 'pro'
                                   ? 'border-blue-600 bg-blue-600 text-white'
+                                  : user.user_tier === 'pro'
+                                  ? 'border-blue-200 bg-blue-100 text-blue-400'
                                   : 'border-slate-200 hover:border-blue-600 text-slate-700'
-                              } disabled:opacity-50`}
+                              } disabled:opacity-50 disabled:cursor-not-allowed`}
                             >
                               <div className="font-medium">Pro</div>
                               <div className="text-xs mt-1">3 portfolios, 10 sections</div>
@@ -236,15 +291,82 @@ export function AdminUserList() {
                               onClick={() => handleTierChange(user.id, user.id, 'hyper')}
                               disabled={user.user_tier === 'hyper'}
                               className={`px-4 py-3 rounded-lg border-2 transition-all ${
-                                user.user_tier === 'hyper'
+                                schedulingTier === 'hyper'
                                   ? 'border-purple-600 bg-purple-600 text-white'
+                                  : user.user_tier === 'hyper'
+                                  ? 'border-purple-200 bg-purple-100 text-purple-400'
                                   : 'border-slate-200 hover:border-purple-600 text-slate-700'
-                              } disabled:opacity-50`}
+                              } disabled:opacity-50 disabled:cursor-not-allowed`}
                             >
                               <div className="font-medium">Hyper</div>
                               <div className="text-xs mt-1">5 portfolios, 10 sections</div>
                             </button>
                           </div>
+
+                          {/* Scheduling UI */}
+                          {schedulingTier && (
+                            <div className="mt-4 p-4 border border-slate-200 rounded-lg bg-white">
+                              <h5 className="font-medium text-slate-900 mb-3">Schedule Tier Change</h5>
+
+                              {/* Permanent Toggle */}
+                              <div className="flex items-center gap-2 mb-4">
+                                <input
+                                  type="checkbox"
+                                  id="permanent"
+                                  checked={isPermanent}
+                                  onChange={(e) => setIsPermanent(e.target.checked)}
+                                  className="w-4 h-4 text-red-900 rounded focus:ring-red-900"
+                                />
+                                <label htmlFor="permanent" className="text-sm text-slate-700">
+                                  Permanent (No expiration)
+                                </label>
+                              </div>
+
+                              {/* Date Pickers */}
+                              {!isPermanent && (
+                                <div className="grid grid-cols-2 gap-4 mb-4">
+                                  <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                                      Start Date
+                                    </label>
+                                    <input
+                                      type="date"
+                                      value={scheduleStartDate}
+                                      onChange={(e) => setScheduleStartDate(e.target.value)}
+                                      className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-900"
+                                    />
+                                  </div>
+                                  <div>
+                                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                                      End Date
+                                    </label>
+                                    <input
+                                      type="date"
+                                      value={scheduleEndDate}
+                                      onChange={(e) => setScheduleEndDate(e.target.value)}
+                                      className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-900"
+                                    />
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Action Buttons */}
+                              <div className="flex items-center gap-3">
+                                <button
+                                  onClick={() => handleScheduleTierChange(user.id, user.id)}
+                                  className="px-4 py-2 bg-red-900 text-white rounded-lg hover:bg-red-800 transition-colors"
+                                >
+                                  Confirm Change
+                                </button>
+                                <button
+                                  onClick={handleCancelScheduling}
+                                  className="px-4 py-2 border border-slate-200 text-slate-700 rounded-lg hover:bg-slate-50 transition-colors"
+                                >
+                                  Cancel
+                                </button>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       </td>
                     </tr>
