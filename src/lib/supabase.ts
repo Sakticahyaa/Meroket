@@ -9,6 +9,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+export type UserRole = 'user' | 'admin';
+export type UserTier = 'free' | 'pro' | 'hyper';
+
 export type Profile = {
   id: string;
   email: string;
@@ -20,6 +23,10 @@ export type Profile = {
   occupation: string | null;
   profile_picture_url: string | null;
   profile_completed: boolean;
+  role: UserRole;
+  user_tier: UserTier;
+  tier_scheduled_at: string | null;
+  tier_expires_at: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -182,6 +189,7 @@ export type NewPortfolioData = {
   user_id?: string;
   slug: string;
   is_published: boolean;
+  is_frozen?: boolean;
   sections: PortfolioSection[];
   theme: {
     primaryColor: string;
@@ -191,4 +199,46 @@ export type NewPortfolioData = {
   };
   created_at?: string;
   updated_at?: string;
+};
+
+// Tier Limits Configuration
+export type TierLimits = {
+  portfolios: number;
+  sections: number;
+  projects: number;
+};
+
+export const TIER_LIMITS: Record<UserTier, TierLimits> = {
+  free: {
+    portfolios: 1,
+    sections: 5,
+    projects: 5,
+  },
+  pro: {
+    portfolios: 3,
+    sections: 10,
+    projects: 25,
+  },
+  hyper: {
+    portfolios: 5,
+    sections: 10,
+    projects: 100,
+  },
+};
+
+// Tier Schedule type
+export type TierSchedule = {
+  id: string;
+  user_id: string;
+  profile_id: string;
+  from_tier: UserTier;
+  to_tier: UserTier;
+  start_date: string;
+  end_date: string | null;
+  is_permanent: boolean;
+  is_executed: boolean;
+  created_at: string;
+  updated_at: string;
+  created_by: string | null;
+  notes: string | null;
 };

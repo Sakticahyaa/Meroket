@@ -6,6 +6,9 @@ import { Register } from './components/Register';
 import { Dashboard } from './components/Dashboard';
 import NewPortfolioEditor from './components/NewPortfolioEditor';
 import { PortfolioView } from './components/PortfolioView';
+import { AdminLayout } from './components/admin/AdminLayout';
+import { AdminDashboard } from './components/admin/AdminDashboard';
+import { AdminUserList } from './components/admin/AdminUserList';
 import { NewPortfolioData, supabase } from './lib/supabase';
 
 // Protected Route Component
@@ -129,7 +132,7 @@ function EditorRoute() {
         }),
       };
 
-      const { data: savedData, error } = data.id
+      const { error } = data.id
         ? await supabase
             .from('portfolios_v2')
             .update(portfolioToSave)
@@ -289,6 +292,16 @@ function AppRoutes() {
           <EditorRoute />
         </ProtectedRoute>
       } />
+
+      {/* Admin Routes */}
+      <Route path="/admin" element={
+        <ProtectedRoute>
+          <AdminLayout />
+        </ProtectedRoute>
+      }>
+        <Route index element={<AdminDashboard />} />
+        <Route path="users" element={<AdminUserList />} />
+      </Route>
 
       {/* Portfolio View Route (public) */}
       <Route path="/:slug" element={<PortfolioRoute />} />
