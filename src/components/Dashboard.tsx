@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { supabase, Portfolio } from '../lib/supabase';
-import { Plus, CreditCard as Edit, Trash2, Eye, LogOut, User } from 'lucide-react';
+import { supabase, Portfolio, TIER_LIMITS } from '../lib/supabase';
+import { Plus, CreditCard as Edit, Trash2, Eye, LogOut, User, Shield } from 'lucide-react';
 import { ProfileEdit } from './ProfileEdit';
+import { getTierBadge, canCreatePortfolio, isAdmin } from '../lib/tierUtils';
 
 type DashboardProps = {
   onEditPortfolio: (portfolioId?: string) => void;
@@ -13,9 +14,11 @@ export function Dashboard({ onEditPortfolio }: DashboardProps) {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [loading, setLoading] = useState(true);
   const [showProfileEdit, setShowProfileEdit] = useState(false);
+  const [portfolioCount, setPortfolioCount] = useState(0);
 
   useEffect(() => {
     loadPortfolios();
+    loadPortfolioCount();
   }, []);
 
   const loadPortfolios = async () => {
@@ -37,6 +40,22 @@ export function Dashboard({ onEditPortfolio }: DashboardProps) {
     }
   };
 
+  const loadPortfolioCount = async () => {
+    if (!user) return;
+
+    try {
+      const { count, error } = await supabase
+        .from('portfolios_v2')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+
+      if (error) throw error;
+      setPortfolioCount(count || 0);
+    } catch (err) {
+      console.error('Failed to load portfolio count:', err);
+    }
+  };
+
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this portfolio?')) return;
 
@@ -48,12 +67,28 @@ export function Dashboard({ onEditPortfolio }: DashboardProps) {
 
       if (error) throw error;
       setPortfolios(portfolios.filter(p => p.id !== id));
+      await loadPortfolioCount();
     } catch {
       alert('Failed to delete portfolio');
     }
   };
 
-  const canCreateMore = portfolios.length < 1;
+  const handleCreatePortfolio = async () => {
+    if (!profile) return;
+
+    const validation = await canCreatePortfolio(user!.id, profile.user_tier);
+    if (!validation.allowed) {
+      alert(validation.message);
+      return;
+    }
+
+    onEditPortfolio();
+  };
+
+  const userTier = profile?.user_tier || 'free';
+  const tierLimits = TIER_LIMITS[userTier];
+  const tierBadge = getTierBadge(userTier);
+  const canCreateMore = portfolioCount < tierLimits.portfolios;
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -61,6 +96,30 @@ export function Dashboard({ onEditPortfolio }: DashboardProps) {
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold text-red-900">Meroket</h1>
           <div className="flex items-center gap-4">
+            {/* Tier Badge */}
+            <div className="flex items-center gap-2">
+              <span
+                className={`inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold text-white ${tierBadge.color}`}
+              >
+                {tierBadge.label}
+              </span>
+              <span className="text-sm text-slate-600">
+                {portfolioCount}/{tierLimits.portfolios} portfolios
+              </span>
+            </div>
+
+            {isAdmin(profile) && (
+              <a
+                href="/admin"
+                className="flex items-center gap-2 px-3 py-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg"
+              >
+                <Shield className="w-4 h-4" />
+                Admin
+              </a>
+            )}
+
+            <div className="h-6 w-px bg-slate-200"></div>
+
             <div className="flex items-center gap-3">
               {profile?.profile_picture_url ? (
                 <img
@@ -101,20 +160,28 @@ export function Dashboard({ onEditPortfolio }: DashboardProps) {
           <div>
             <h2 className="text-3xl font-bold text-slate-900">My Portfolios</h2>
             <p className="text-slate-600 mt-2">
-              {canCreateMore
-                ? 'Create your first portfolio to get started'
-                : 'You have used your free portfolio (1/1)'}
+              {portfolioCount === 0
+                ? `Create your first portfolio to get started (${portfolioCount}/${tierLimits.portfolios} used)`
+                : `You're using ${portfolioCount} of ${tierLimits.portfolios} portfolios on the ${tierBadge.label} plan`}
             </p>
+            {!canCreateMore && (
+              <p className="text-amber-600 text-sm mt-1">
+                ⚠️ Portfolio limit reached. Upgrade your plan to create more.
+              </p>
+            )}
           </div>
-          {canCreateMore && (
-            <button
-              onClick={() => onEditPortfolio()}
-              className="flex items-center gap-2 px-6 py-3 bg-red-900 text-white rounded-lg hover:bg-red-800"
-            >
-              <Plus className="w-5 h-5" />
-              Create Portfolio
-            </button>
-          )}
+          <button
+            onClick={handleCreatePortfolio}
+            disabled={!canCreateMore}
+            className={`flex items-center gap-2 px-6 py-3 rounded-lg ${
+              canCreateMore
+                ? 'bg-red-900 text-white hover:bg-red-800'
+                : 'bg-slate-200 text-slate-500 cursor-not-allowed'
+            }`}
+          >
+            <Plus className="w-5 h-5" />
+            Create Portfolio
+          </button>
         </div>
 
         {loading ? (
@@ -130,7 +197,7 @@ export function Dashboard({ onEditPortfolio }: DashboardProps) {
                 Create your first portfolio to showcase your work to the world
               </p>
               <button
-                onClick={() => onEditPortfolio()}
+                onClick={handleCreatePortfolio}
                 className="px-6 py-3 bg-red-900 text-white rounded-lg hover:bg-red-800"
               >
                 Create Your Portfolio

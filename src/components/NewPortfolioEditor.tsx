@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { Plus, Monitor, Smartphone, Trash2, ChevronUp, ChevronDown } from 'lucide-react';
-import { NewPortfolioData, PortfolioSection, SectionType } from '../lib/supabase';
+import { useState } from 'react';
+import { Plus, Monitor, Smartphone, Trash2, ChevronUp, ChevronDown, AlertCircle } from 'lucide-react';
+import { NewPortfolioData, PortfolioSection, SectionType, TIER_LIMITS } from '../lib/supabase';
+import { useAuth } from '../contexts/AuthContext';
+import { canAddSection, countTotalProjectCards, getTierBadge } from '../lib/tierUtils';
 import {
   HeroEditor,
   AboutEditor,
@@ -17,6 +19,7 @@ interface NewPortfolioEditorProps {
 }
 
 export default function NewPortfolioEditor({ initialData, onSave, onCancel }: NewPortfolioEditorProps) {
+  const { profile } = useAuth();
   const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
   const [portfolioData, setPortfolioData] = useState<NewPortfolioData>(
     initialData || {
@@ -34,6 +37,11 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
   const [selectedSectionIndex, setSelectedSectionIndex] = useState<number | null>(null);
   const [showAddSection, setShowAddSection] = useState(false);
 
+  const userTier = profile?.user_tier || 'free';
+  const tierLimits = TIER_LIMITS[userTier];
+  const tierBadge = getTierBadge(userTier);
+  const totalProjectCards = countTotalProjectCards(portfolioData.sections);
+
   // Helper function to generate gradient CSS
   const getGradientCSS = (start: string, end: string, direction: 'horizontal' | 'vertical' | 'diagonal') => {
     const directions = {
@@ -45,6 +53,13 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
   };
 
   const addSection = (type: SectionType) => {
+    // Check tier limits before adding section
+    const validation = canAddSection(portfolioData.sections.length, userTier);
+    if (!validation.allowed) {
+      alert(validation.message);
+      return;
+    }
+
     let newSection: PortfolioSection;
 
     switch (type) {
@@ -211,7 +226,34 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
         {/* Sections Panel */}
         <div className="w-80 bg-white border-r border-gray-200 overflow-y-auto">
           <div className="p-4">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Sections</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold text-gray-900">Sections</h2>
+              <span
+                className={`inline-flex items-center px-2 py-1 rounded text-xs font-bold text-white ${tierBadge.color}`}
+              >
+                {tierBadge.label}
+              </span>
+            </div>
+
+            {/* Tier Limits Banner */}
+            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <div className="flex items-start gap-2">
+                <AlertCircle className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                <div className="text-xs text-blue-800">
+                  <p className="font-medium mb-1">Your Limits ({tierBadge.label} Plan)</p>
+                  <ul className="space-y-0.5 text-blue-700">
+                    <li>• Sections: {portfolioData.sections.length}/{tierLimits.sections}</li>
+                    <li>• Project Cards: {totalProjectCards}/{tierLimits.projects}</li>
+                  </ul>
+                  {(portfolioData.sections.length >= tierLimits.sections ||
+                    totalProjectCards >= tierLimits.projects) && (
+                    <p className="mt-2 text-amber-700 font-medium">
+                      ⚠️ Limit reached. Upgrade to add more.
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
 
             {/* Section List */}
             <div className="space-y-2">
@@ -276,10 +318,15 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
             {/* Add Section Button */}
             <button
               onClick={() => setShowAddSection(!showAddSection)}
-              className="w-full mt-4 p-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-colors flex items-center justify-center gap-2"
+              disabled={portfolioData.sections.length >= tierLimits.sections}
+              className={`w-full mt-4 p-3 border-2 border-dashed rounded-lg transition-colors flex items-center justify-center gap-2 ${
+                portfolioData.sections.length >= tierLimits.sections
+                  ? 'border-gray-200 text-gray-400 cursor-not-allowed'
+                  : 'border-gray-300 text-gray-600 hover:border-blue-500 hover:text-blue-600'
+              }`}
             >
               <Plus className="w-5 h-5" />
-              Add Section
+              Add Section {portfolioData.sections.length >= tierLimits.sections && '(Limit Reached)'}
             </button>
 
             {/* Add Section Menu */}
