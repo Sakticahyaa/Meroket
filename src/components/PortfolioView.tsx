@@ -80,13 +80,10 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         </div>
       )}
 
-      {sections.map((storedSection, index) => {
-        const section = storedSection.data;
-        const sectionId = storedSection.id;
-
+      {sections.map((section: any, index) => {
         // HERO SECTION
-        if (storedSection.type === 'hero') {
-          const heroData = section as any;
+        if (section.type === 'hero') {
+          const heroData = section;
           let bgStyle: any = {};
 
           if (heroData.backgroundType === 'color') {
@@ -111,7 +108,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
 
           return (
             <section
-              key={sectionId}
+              key={`hero-${index}`}
               className="relative min-h-screen flex items-center justify-center px-4"
               style={bgStyle}
             >
@@ -137,8 +134,8 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         }
 
         // ABOUT SECTION
-        if (storedSection.type === 'about') {
-          const aboutData = section as any;
+        if (section.type === 'about') {
+          const aboutData = section;
           const shapeClasses = {
             circle: 'rounded-full',
             square: 'rounded-none',
@@ -148,7 +145,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
           };
 
           return (
-            <section key={sectionId} className="py-20 px-4 bg-white">
+            <section key={`about-${index}`} className="py-20 px-4 bg-white">
               <div className="max-w-6xl mx-auto">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                   {aboutData.image && (
@@ -180,11 +177,11 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         }
 
         // SKILLS SECTION
-        if (storedSection.type === 'skills') {
-          const skillsData = section as any;
+        if (section.type === 'skills') {
+          const skillsData = section;
 
           return (
-            <section key={sectionId} className="py-20 px-4 bg-slate-50">
+            <section key={`skills-${index}`} className="py-20 px-4 bg-slate-50">
               <div className="max-w-6xl mx-auto">
                 <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
                   {skillsData.title}
@@ -211,11 +208,11 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         }
 
         // PROJECTS SECTION
-        if (storedSection.type === 'projects') {
-          const projectsData = section as any;
+        if (section.type === 'projects') {
+          const projectsData = section;
 
           return (
-            <section key={sectionId} className="py-20 px-4 bg-white">
+            <section key={`projects-${index}`} className="py-20 px-4 bg-white">
               <div className="max-w-6xl mx-auto">
                 <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
                   {projectsData.title}
@@ -258,11 +255,11 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         }
 
         // TESTIMONIALS SECTION
-        if (storedSection.type === 'testimonials') {
-          const testimonialsData = section as any;
+        if (section.type === 'testimonials') {
+          const testimonialsData = section;
 
           return (
-            <section key={sectionId} className="py-20 px-4 bg-slate-50">
+            <section key={`testimonials-${index}`} className="py-20 px-4 bg-slate-50">
               <div className="max-w-6xl mx-auto">
                 <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
                   {testimonialsData.title}
@@ -285,11 +282,11 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         }
 
         // CONTACT SECTION
-        if (storedSection.type === 'contact') {
-          const contactData = section as any;
+        if (section.type === 'contact') {
+          const contactData = section;
 
           return (
-            <section key={sectionId} className="py-20 px-4 bg-white">
+            <section key={`contact-${index}`} className="py-20 px-4 bg-white">
               <div className="max-w-4xl mx-auto text-center">
                 <h2 className="text-4xl font-bold mb-8 text-slate-900">{contactData.title}</h2>
                 <div className="flex justify-center gap-6">
