@@ -167,23 +167,74 @@ function DashboardApp() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { portfolioId } = useParams<{ portfolioId: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const [view, setView] = useState<'dashboard' | 'editor'>('dashboard');
-  const [editingPortfolioId, setEditingPortfolioId] = useState<string | undefined>();
+  const [editingSlug, setEditingSlug] = useState<string | undefined>();
+  const [portfolioData, setPortfolioData] = useState<NewPortfolioData | undefined>();
+  const [loading, setLoading] = useState(false);
 
-  // Determine view based on URL
+  // Load portfolio data when editing
   useEffect(() => {
-    if (location.pathname === '/dashboard/create') {
+    const loadPortfolio = async () => {
+      if (!slug || !user) return;
+
+      setLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('portfolios_v2')
+          .select('*')
+          .eq('slug', slug)
+          .eq('user_id', user.id)
+          .single();
+
+        if (error) throw error;
+
+        if (data) {
+          // Parse portfolio_data JSONB
+          const parsedData = typeof data.portfolio_data === 'string'
+            ? JSON.parse(data.portfolio_data)
+            : data.portfolio_data;
+
+          setPortfolioData({
+            id: data.id,
+            user_id: data.user_id,
+            slug: data.slug,
+            is_published: data.is_published,
+            is_frozen: data.is_frozen,
+            sections: parsedData.sections || [],
+            theme: parsedData.theme || {
+              primaryColor: '#3B82F6',
+              secondaryColor: '#10B981',
+              headingColor: '#1F2937',
+              bodyColor: '#6B7280',
+            },
+            created_at: data.created_at,
+            updated_at: data.updated_at,
+          });
+        }
+      } catch (error) {
+        console.error('Error loading portfolio:', error);
+        alert('Failed to load portfolio');
+        navigate('/dashboard');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (location.pathname.startsWith('/portfolio/') && slug) {
       setView('editor');
-      setEditingPortfolioId(undefined);
-    } else if (location.pathname.startsWith('/dashboard/edit/') && portfolioId) {
+      setEditingSlug(slug);
+      loadPortfolio();
+    } else if (location.pathname === '/dashboard/create') {
       setView('editor');
-      setEditingPortfolioId(portfolioId);
+      setEditingSlug(undefined);
+      setPortfolioData(undefined);
     } else {
       setView('dashboard');
-      setEditingPortfolioId(undefined);
+      setEditingSlug(undefined);
+      setPortfolioData(undefined);
     }
-  }, [location.pathname, portfolioId]);
+  }, [location.pathname, slug, user, navigate]);
 
   const handleSave = async (data: NewPortfolioData, publish: boolean) => {
     if (!user) {
@@ -196,7 +247,7 @@ function DashboardApp() {
       // Save to database
       const portfolioToSave = {
         user_id: user.id,
-        slug: data.slug,
+        slug: data.slug.toLowerCase().replace(/\s+/g, '-'), // Normalize slug
         is_published: publish,
         portfolio_data: JSON.stringify({
           sections: data.sections,
@@ -204,11 +255,12 @@ function DashboardApp() {
         }),
       };
 
-      const { data: savedData, error } = editingPortfolioId
+      const { error } = editingSlug && data.id
         ? await supabase
             .from('portfolios_v2')
             .update(portfolioToSave)
-            .eq('id', editingPortfolioId)
+            .eq('id', data.id)
+            .eq('user_id', user.id)
             .select()
             .single()
         : await supabase
@@ -232,9 +284,20 @@ function DashboardApp() {
   };
 
   if (view === 'editor') {
+    if (loading) {
+      return (
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <div className="text-xl text-slate-600">Loading portfolio...</div>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <NewPortfolioEditor
-        initialData={editingPortfolioId ? undefined : undefined} // TODO: Load portfolio data if editing
+        initialData={portfolioData}
         onSave={handleSave}
         onCancel={handleCancel}
       />
@@ -244,13 +307,12 @@ function DashboardApp() {
   return (
     <Dashboard
       onEditPortfolio={(portfolioId) => {
+        // portfolioId is actually the slug now
         if (portfolioId) {
-          window.history.pushState({}, '', `/dashboard/edit/${portfolioId}`);
+          navigate(`/portfolio/${portfolioId}/edit`);
         } else {
-          window.history.pushState({}, '', '/dashboard/create');
+          navigate('/dashboard/create');
         }
-        setEditingPortfolioId(portfolioId);
-        setView('editor');
       }}
     />
   );
@@ -282,7 +344,7 @@ function AppRoutes() {
           <DashboardApp />
         </ProtectedRoute>
       } />
-      <Route path="/dashboard/edit/:portfolioId" element={
+      <Route path="/portfolio/:slug/edit" element={
         <ProtectedRoute>
           <DashboardApp />
         </ProtectedRoute>

@@ -184,6 +184,13 @@ export type PortfolioSection =
   | TestimonialsSection
   | ContactSection;
 
+// Wrapper type for sections as stored in database (with id and data wrapper)
+export type StoredSection = {
+  id: string;
+  type: SectionType;
+  data: HeroSection | AboutSection | SkillsSection | ProjectsSection | TestimonialsSection | ContactSection;
+};
+
 export type NewPortfolioData = {
   id?: string;
   user_id?: string;
@@ -199,6 +206,26 @@ export type NewPortfolioData = {
   };
   created_at?: string;
   updated_at?: string;
+};
+
+// Database table structure for portfolios_v2
+export type PortfolioV2 = {
+  id: string;
+  user_id: string;
+  slug: string;
+  is_published: boolean;
+  is_frozen: boolean;
+  portfolio_data: {
+    sections: StoredSection[];
+    theme?: {
+      primaryColor: string;
+      secondaryColor: string;
+      headingColor: string;
+      bodyColor: string;
+    };
+  };
+  created_at: string;
+  updated_at: string;
 };
 
 // Tier Limits Configuration

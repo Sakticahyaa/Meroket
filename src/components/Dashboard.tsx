@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { supabase, Portfolio, TIER_LIMITS } from '../lib/supabase';
+import { supabase, PortfolioV2, TIER_LIMITS } from '../lib/supabase';
 import { Plus, CreditCard as Edit, Trash2, Eye, LogOut, User, Shield } from 'lucide-react';
 import { ProfileEdit } from './ProfileEdit';
 import { getTierBadge, canCreatePortfolio, isAdmin } from '../lib/tierUtils';
@@ -11,7 +11,7 @@ type DashboardProps = {
 
 export function Dashboard({ onEditPortfolio }: DashboardProps) {
   const { user, profile, signOut } = useAuth();
-  const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
+  const [portfolios, setPortfolios] = useState<PortfolioV2[]>([]);
   const [loading, setLoading] = useState(true);
   const [showProfileEdit, setShowProfileEdit] = useState(false);
   const [portfolioCount, setPortfolioCount] = useState(0);
@@ -26,7 +26,7 @@ export function Dashboard({ onEditPortfolio }: DashboardProps) {
 
     try {
       const { data, error } = await supabase
-        .from('portfolios')
+        .from('portfolios_v2')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
@@ -61,7 +61,7 @@ export function Dashboard({ onEditPortfolio }: DashboardProps) {
 
     try {
       const { error } = await supabase
-        .from('portfolios')
+        .from('portfolios_v2')
         .delete()
         .eq('id', id);
 
@@ -206,69 +206,90 @@ export function Dashboard({ onEditPortfolio }: DashboardProps) {
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {portfolios.map((portfolio) => (
-              <div key={portfolio.id} className="bg-white rounded-xl shadow-sm overflow-hidden">
-                <div className="h-48 bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
-                  {portfolio.hero_image_url ? (
-                    <img
-                      src={portfolio.hero_image_url}
-                      alt={portfolio.slug}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="text-slate-400 text-4xl font-bold">
-                      {portfolio.slug.charAt(0).toUpperCase()}
-                    </div>
-                  )}
-                </div>
-                <div className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <div>
-                      <h3 className="text-lg font-bold text-slate-900 mb-1">
-                        {portfolio.hero_title || portfolio.slug}
-                      </h3>
-                      <p className="text-sm text-slate-600">meroket.id/{portfolio.slug}</p>
-                    </div>
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-medium ${
-                        portfolio.is_published
-                          ? 'bg-green-100 text-green-700'
-                          : 'bg-yellow-100 text-yellow-700'
-                      }`}
-                    >
-                      {portfolio.is_published ? 'Published' : 'Draft'}
-                    </span>
-                  </div>
+            {portfolios.map((portfolio) => {
+              // Extract hero section data from portfolio_data
+              const heroSection = portfolio.portfolio_data?.sections?.find(
+                (s) => s.type === 'hero'
+              );
+              const heroData = (heroSection?.type === 'hero' ? heroSection.data : {}) as any;
+              const portfolioTitle = heroData.title || portfolio.slug;
 
-                  <div className="flex gap-2">
-                    {portfolio.is_published && (
-                      <a
-                        href={`http://meroket.id/${portfolio.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200"
-                      >
-                        <Eye className="w-4 h-4" />
-                        View
-                      </a>
+              // Get background for preview
+              let bgStyle: any = { background: 'linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%)' };
+              if (heroData.backgroundType === 'color') {
+                bgStyle = { backgroundColor: heroData.backgroundColor || '#f1f5f9' };
+              } else if (heroData.backgroundType === 'gradient') {
+                const direction = heroData.gradientDirection === 'horizontal' ? '90deg' :
+                                heroData.gradientDirection === 'vertical' ? '180deg' : '135deg';
+                bgStyle = {
+                  background: `linear-gradient(${direction}, ${heroData.gradientStart || '#f1f5f9'}, ${heroData.gradientEnd || '#cbd5e1'})`
+                };
+              } else if (heroData.backgroundType === 'image' && heroData.backgroundImage) {
+                bgStyle = {
+                  backgroundImage: `url(${heroData.backgroundImage})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                };
+              }
+
+              return (
+                <div key={portfolio.id} className="bg-white rounded-xl shadow-sm overflow-hidden">
+                  <div className="h-48 flex items-center justify-center" style={bgStyle}>
+                    {!heroData.backgroundImage && (
+                      <div className="text-slate-400 text-4xl font-bold">
+                        {portfolio.slug.charAt(0).toUpperCase()}
+                      </div>
                     )}
-                    <button
-                      onClick={() => onEditPortfolio(portfolio.id)}
-                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-900 text-white rounded-lg hover:bg-red-800"
-                    >
-                      <Edit className="w-4 h-4" />
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(portfolio.id)}
-                      className="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                  </div>
+                  <div className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div>
+                        <h3 className="text-lg font-bold text-slate-900 mb-1">
+                          {portfolioTitle}
+                        </h3>
+                        <p className="text-sm text-slate-600">meroket.id/{portfolio.slug}</p>
+                      </div>
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-medium ${
+                          portfolio.is_published
+                            ? 'bg-green-100 text-green-700'
+                            : 'bg-yellow-100 text-yellow-700'
+                        }`}
+                      >
+                        {portfolio.is_published ? 'Published' : 'Draft'}
+                      </span>
+                    </div>
+
+                    <div className="flex gap-2">
+                      {portfolio.is_published && (
+                        <a
+                          href={`/${portfolio.slug}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200"
+                        >
+                          <Eye className="w-4 h-4" />
+                          View
+                        </a>
+                      )}
+                      <button
+                        onClick={() => onEditPortfolio(portfolio.slug)}
+                        className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-red-900 text-white rounded-lg hover:bg-red-800"
+                      >
+                        <Edit className="w-4 h-4" />
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(portfolio.id)}
+                        className="px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
