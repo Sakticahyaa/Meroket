@@ -35,6 +35,18 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         return;
       }
 
+      // Parse portfolio_data if it's a string
+      if (typeof data.portfolio_data === 'string') {
+        try {
+          data.portfolio_data = JSON.parse(data.portfolio_data);
+        } catch (e) {
+          console.error('Failed to parse portfolio_data:', e);
+        }
+      }
+
+      console.log('Portfolio loaded:', data);
+      console.log('Sections:', data.portfolio_data?.sections);
+
       setPortfolio(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load portfolio');
@@ -66,6 +78,20 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
   }
 
   const sections = portfolio.portfolio_data?.sections || [];
+
+  console.log('Rendering portfolio with sections:', sections);
+
+  // If no sections, show a message
+  if (sections.length === 0) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-slate-900 mb-2">Empty Portfolio</h1>
+          <p className="text-slate-600">This portfolio has no sections yet.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white">
