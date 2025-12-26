@@ -14,7 +14,7 @@ import {
   TestimonialCard,
   AnimationSettings as AnimationSettingsType,
 } from '../lib/supabase';
-import { uploadImage } from '../lib/storageUtils';
+import { uploadImage, deleteImage, isSupabaseStorageUrl } from '../lib/storageUtils';
 import { ImageCropperModal } from './ImageCropperModal';
 import { FontSelector } from './FontSelector';
 import { AnimationSettings } from './AnimationSettings';
@@ -220,6 +220,19 @@ export function HeroEditor({
                   alt="Background preview"
                   className="w-full h-full object-cover"
                 />
+                <button
+                  onClick={async () => {
+                    if (!window.confirm('Delete this image? This action cannot be undone.')) return;
+                    if (section.backgroundImage && isSupabaseStorageUrl(section.backgroundImage)) {
+                      await deleteImage(section.backgroundImage);
+                    }
+                    onChange({ ...section, backgroundImage: undefined });
+                  }}
+                  className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                  title="Remove background image"
+                >
+                  <X className="w-3 h-3" />
+                </button>
               </div>
             )}
           </div>
@@ -247,7 +260,13 @@ export function HeroEditor({
                 className="w-full h-full object-cover"
               />
               <button
-                onClick={() => onChange({ ...section, profileImage: undefined })}
+                onClick={async () => {
+                  if (!window.confirm('Delete this image? This action cannot be undone.')) return;
+                  if (section.profileImage && isSupabaseStorageUrl(section.profileImage)) {
+                    await deleteImage(section.profileImage);
+                  }
+                  onChange({ ...section, profileImage: undefined });
+                }}
                 className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
                 title="Remove profile image"
               >
@@ -393,6 +412,19 @@ export function AboutEditor({
                 alt="Profile preview"
                 className="w-full h-full object-cover"
               />
+              <button
+                onClick={async () => {
+                  if (!window.confirm('Delete this image? This action cannot be undone.')) return;
+                  if (section.image && isSupabaseStorageUrl(section.image)) {
+                    await deleteImage(section.image);
+                  }
+                  onChange({ ...section, image: undefined });
+                }}
+                className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                title="Remove image"
+              >
+                <X className="w-3 h-3" />
+              </button>
             </div>
           )}
         </div>
@@ -602,8 +634,21 @@ export function SkillsEditor({
                       className="block w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                     />
                     {card.icon && (
-                      <div className="mt-2 w-12 h-12 rounded border border-gray-300 overflow-hidden bg-white">
+                      <div className="mt-2 w-12 h-12 rounded border border-gray-300 overflow-hidden bg-white relative">
                         <img src={card.icon} alt="Icon preview" className="w-full h-full object-contain" />
+                        <button
+                          onClick={async () => {
+                            if (!window.confirm('Delete this icon? This action cannot be undone.')) return;
+                            if (card.icon && isSupabaseStorageUrl(card.icon)) {
+                              await deleteImage(card.icon);
+                            }
+                            updateCard(card.id, { icon: undefined });
+                          }}
+                          className="absolute -top-1 -right-1 p-0.5 bg-red-500 text-white rounded-full hover:bg-red-600"
+                          title="Remove icon"
+                        >
+                          <X className="w-2 h-2" />
+                        </button>
                       </div>
                     )}
                     {isUploadingIcon && iconCardId === card.id && (

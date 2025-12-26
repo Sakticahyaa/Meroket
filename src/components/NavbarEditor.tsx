@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { NewPortfolioData } from '../lib/supabase';
-import { uploadImage } from '../lib/storageUtils';
+import { uploadImage, deleteImage, isSupabaseStorageUrl } from '../lib/storageUtils';
 import { ImageCropperModal } from './ImageCropperModal';
 import { X } from 'lucide-react';
 
@@ -264,7 +264,14 @@ export function NavbarEditor({ portfolioData, onUpdate, userFullName }: NavbarEd
                   className="w-full h-full object-contain"
                 />
                 <button
-                  onClick={() => updateNavbar({ brandingLogo: undefined })}
+                  onClick={async () => {
+                    if (!window.confirm('Delete this logo? This action cannot be undone.')) return;
+                    const logoUrl = portfolioData.navbar?.brandingLogo;
+                    if (logoUrl && isSupabaseStorageUrl(logoUrl)) {
+                      await deleteImage(logoUrl);
+                    }
+                    updateNavbar({ brandingLogo: undefined });
+                  }}
                   className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
                   title="Remove logo"
                 >
