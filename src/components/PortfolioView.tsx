@@ -117,15 +117,22 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
           if (heroData.backgroundType === 'color') {
             bgStyle = { backgroundColor: heroData.backgroundColor || '#FFFFFF' };
           } else if (heroData.backgroundType === 'gradient') {
-            const direction =
-              heroData.gradientDirection === 'horizontal'
-                ? 'to right'
-                : heroData.gradientDirection === 'vertical'
-                ? 'to bottom'
-                : 'to bottom right';
-            bgStyle = {
-              background: `linear-gradient(${direction}, ${heroData.gradientStart || '#667eea'}, ${heroData.gradientEnd || '#764ba2'})`,
-            };
+            const isRadial = heroData.gradientType === 'radial';
+            if (isRadial) {
+              bgStyle = {
+                background: `radial-gradient(circle, ${heroData.gradientStart || '#667eea'}, ${heroData.gradientEnd || '#764ba2'})`,
+              };
+            } else {
+              const direction =
+                heroData.gradientDirection === 'horizontal'
+                  ? 'to right'
+                  : heroData.gradientDirection === 'vertical'
+                  ? 'to bottom'
+                  : 'to bottom right';
+              bgStyle = {
+                background: `linear-gradient(${direction}, ${heroData.gradientStart || '#667eea'}, ${heroData.gradientEnd || '#764ba2'})`,
+              };
+            }
           } else if (heroData.backgroundType === 'image' && heroData.backgroundImage) {
             bgStyle = {
               backgroundImage: `url(${heroData.backgroundImage})`,
@@ -143,16 +150,31 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
               {heroData.backgroundType === 'image' && (
                 <div className="absolute inset-0 bg-black/30"></div>
               )}
+              {heroData.profileImage && (
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  <img
+                    src={heroData.profileImage}
+                    alt="Profile"
+                    className="w-64 h-64 rounded-full object-cover border-4 border-white shadow-2xl"
+                  />
+                </div>
+              )}
               <div className="relative text-center max-w-4xl mx-auto">
                 <h1
                   className="text-5xl md:text-7xl font-bold mb-6"
-                  style={{ color: heroData.titleColor || '#1F2937' }}
+                  style={{
+                    color: heroData.titleColor || '#1F2937',
+                    fontFamily: heroData.titleFont || 'Inter',
+                  }}
                 >
                   {heroData.title}
                 </h1>
                 <p
                   className="text-2xl md:text-3xl"
-                  style={{ color: heroData.subtitleColor || '#6B7280' }}
+                  style={{
+                    color: heroData.subtitleColor || '#6B7280',
+                    fontFamily: heroData.subtitleFont || 'Inter',
+                  }}
                 >
                   {heroData.subtitle}
                 </p>

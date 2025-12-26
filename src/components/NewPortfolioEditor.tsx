@@ -471,15 +471,22 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                   if (section.backgroundType === 'color') {
                     bgStyle = { backgroundColor: section.backgroundColor || '#FFFFFF' };
                   } else if (section.backgroundType === 'gradient') {
-                    const direction =
-                      section.gradientDirection === 'horizontal'
-                        ? 'to right'
-                        : section.gradientDirection === 'vertical'
-                        ? 'to bottom'
-                        : 'to bottom right';
-                    bgStyle = {
-                      background: `linear-gradient(${direction}, ${section.gradientStart || '#667eea'}, ${section.gradientEnd || '#764ba2'})`,
-                    };
+                    const isRadial = section.gradientType === 'radial';
+                    if (isRadial) {
+                      bgStyle = {
+                        background: `radial-gradient(circle, ${section.gradientStart || '#667eea'}, ${section.gradientEnd || '#764ba2'})`,
+                      };
+                    } else {
+                      const direction =
+                        section.gradientDirection === 'horizontal'
+                          ? 'to right'
+                          : section.gradientDirection === 'vertical'
+                          ? 'to bottom'
+                          : 'to bottom right';
+                      bgStyle = {
+                        background: `linear-gradient(${direction}, ${section.gradientStart || '#667eea'}, ${section.gradientEnd || '#764ba2'})`,
+                      };
+                    }
                   } else if (section.backgroundType === 'image' && section.backgroundImage) {
                     bgStyle = {
                       backgroundImage: `url(${section.backgroundImage})`,
@@ -497,16 +504,31 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                       {section.backgroundType === 'image' && (
                         <div className="absolute inset-0 bg-black/30"></div>
                       )}
+                      {section.profileImage && (
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <img
+                            src={section.profileImage}
+                            alt="Profile"
+                            className="w-64 h-64 rounded-full object-cover border-4 border-white shadow-2xl"
+                          />
+                        </div>
+                      )}
                       <div className="relative text-center max-w-4xl mx-auto">
                         <h1
                           className="text-5xl md:text-7xl font-bold mb-6"
-                          style={{ color: section.titleColor || '#1F2937' }}
+                          style={{
+                            color: section.titleColor || '#1F2937',
+                            fontFamily: section.titleFont || 'Inter',
+                          }}
                         >
                           {section.title}
                         </h1>
                         <p
                           className="text-2xl md:text-3xl"
-                          style={{ color: section.subtitleColor || '#6B7280' }}
+                          style={{
+                            color: section.subtitleColor || '#6B7280',
+                            fontFamily: section.subtitleFont || 'Inter',
+                          }}
                         >
                           {section.subtitle}
                         </p>
