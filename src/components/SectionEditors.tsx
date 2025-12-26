@@ -311,6 +311,16 @@ export function AboutEditor({
           />
         </div>
       )}
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Background Color</label>
+        <input
+          type="color"
+          value={section.backgroundColor || '#FFFFFF'}
+          onChange={(e) => onChange({ ...section, backgroundColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
+        />
+      </div>
     </div>
   );
 }
@@ -356,6 +366,16 @@ export function SkillsEditor({
           value={section.title}
           onChange={(e) => onChange({ ...section, title: e.target.value })}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Background Color</label>
+        <input
+          type="color"
+          value={section.backgroundColor || '#F8FAFC'}
+          onChange={(e) => onChange({ ...section, backgroundColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
         />
       </div>
 
@@ -507,6 +527,16 @@ export function ProjectsEditor({
       </div>
 
       <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Background Color</label>
+        <input
+          type="color"
+          value={section.backgroundColor || '#FFFFFF'}
+          onChange={(e) => onChange({ ...section, backgroundColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
+        />
+      </div>
+
+      <div>
         <div className="flex items-center justify-between mb-2">
           <label className="block text-sm font-medium text-gray-700">Projects</label>
           <button
@@ -649,6 +679,16 @@ export function TestimonialsEditor({
       </div>
 
       <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Background Color</label>
+        <input
+          type="color"
+          value={section.backgroundColor || '#F8FAFC'}
+          onChange={(e) => onChange({ ...section, backgroundColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
+        />
+      </div>
+
+      <div>
         <div className="flex items-center justify-between mb-2">
           <label className="block text-sm font-medium text-gray-700">Testimonials</label>
           <button
@@ -743,6 +783,16 @@ export function ContactEditor({
           value={section.title}
           onChange={(e) => onChange({ ...section, title: e.target.value })}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Background Color</label>
+        <input
+          type="color"
+          value={section.backgroundColor || '#FFFFFF'}
+          onChange={(e) => onChange({ ...section, backgroundColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
         />
       </div>
 

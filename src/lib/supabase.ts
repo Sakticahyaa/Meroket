@@ -123,6 +123,7 @@ export type AboutSection = {
   imageShape: 'circle' | 'square' | 'rounded' | 'hexagon' | 'triangle';
   imageBorder: boolean;
   borderColor?: string;
+  backgroundColor?: string;
 };
 
 export type SkillCard = {
@@ -137,6 +138,7 @@ export type SkillsSection = {
   type: 'skills';
   title: string;
   cards: SkillCard[];
+  backgroundColor?: string;
 };
 
 export type ProjectCard = {
@@ -152,6 +154,7 @@ export type ProjectsSection = {
   type: 'projects';
   title: string;
   cards: ProjectCard[];
+  backgroundColor?: string;
 };
 
 export type TestimonialCard = {
@@ -165,6 +168,7 @@ export type TestimonialsSection = {
   type: 'testimonials';
   title: string;
   cards: TestimonialCard[];
+  backgroundColor?: string;
 };
 
 export type ContactSection = {
@@ -174,6 +178,7 @@ export type ContactSection = {
   email?: string;
   whatsappNumber?: string;
   showForm: boolean;
+  backgroundColor?: string;
 };
 
 export type PortfolioSection =

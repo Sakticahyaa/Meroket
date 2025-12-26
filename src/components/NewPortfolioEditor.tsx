@@ -506,7 +506,12 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                   };
 
                   return (
-                    <section key={`about-${index}`} id="section-about" className="py-20 px-4 bg-white">
+                    <section
+                      key={`about-${index}`}
+                      id="section-about"
+                      className="py-20 px-4"
+                      style={{ backgroundColor: section.backgroundColor || '#FFFFFF' }}
+                    >
                       <div className="max-w-6xl mx-auto">
                         <div className="grid md:grid-cols-2 gap-12 items-center">
                           {section.image && (
@@ -540,7 +545,12 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                 // SKILLS SECTION
                 if (section.type === 'skills') {
                   return (
-                    <section key={`skills-${index}`} id="section-skills" className="py-20 px-4 bg-slate-50">
+                    <section
+                      key={`skills-${index}`}
+                      id="section-skills"
+                      className="py-20 px-4"
+                      style={{ backgroundColor: section.backgroundColor || '#F8FAFC' }}
+                    >
                       <div className="max-w-6xl mx-auto">
                         <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
                           {section.title}
@@ -569,7 +579,12 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                 // PROJECTS SECTION
                 if (section.type === 'projects') {
                   return (
-                    <section key={`projects-${index}`} id="section-projects" className="py-20 px-4 bg-white">
+                    <section
+                      key={`projects-${index}`}
+                      id="section-projects"
+                      className="py-20 px-4"
+                      style={{ backgroundColor: section.backgroundColor || '#FFFFFF' }}
+                    >
                       <div className="max-w-6xl mx-auto">
                         <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
                           {section.title}
@@ -613,7 +628,12 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                 // TESTIMONIALS SECTION
                 if (section.type === 'testimonials') {
                   return (
-                    <section key={`testimonials-${index}`} id="section-testimonials" className="py-20 px-4 bg-slate-50">
+                    <section
+                      key={`testimonials-${index}`}
+                      id="section-testimonials"
+                      className="py-20 px-4"
+                      style={{ backgroundColor: section.backgroundColor || '#F8FAFC' }}
+                    >
                       <div className="max-w-6xl mx-auto">
                         <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
                           {section.title}
@@ -638,7 +658,12 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                 // CONTACT SECTION
                 if (section.type === 'contact') {
                   return (
-                    <section key={`contact-${index}`} id="section-contact" className="py-20 px-4 bg-white">
+                    <section
+                      key={`contact-${index}`}
+                      id="section-contact"
+                      className="py-20 px-4"
+                      style={{ backgroundColor: section.backgroundColor || '#FFFFFF' }}
+                    >
                       <div className="max-w-4xl mx-auto text-center">
                         <h2 className="text-4xl font-bold mb-8 text-slate-900">{section.title}</h2>
                         <p className="text-slate-600">

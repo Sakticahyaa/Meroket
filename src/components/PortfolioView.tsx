@@ -173,7 +173,12 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
           };
 
           return (
-            <section key={`about-${index}`} id="section-about" className="py-20 px-4 bg-white">
+            <section
+              key={`about-${index}`}
+              id="section-about"
+              className="py-20 px-4"
+              style={{ backgroundColor: aboutData.backgroundColor || '#FFFFFF' }}
+            >
               <div className="max-w-6xl mx-auto">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                   {aboutData.image && (
@@ -209,7 +214,12 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
           const skillsData = section;
 
           return (
-            <section key={`skills-${index}`} id="section-skills" className="py-20 px-4 bg-slate-50">
+            <section
+              key={`skills-${index}`}
+              id="section-skills"
+              className="py-20 px-4"
+              style={{ backgroundColor: skillsData.backgroundColor || '#F8FAFC' }}
+            >
               <div className="max-w-6xl mx-auto">
                 <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
                   {skillsData.title}
@@ -240,7 +250,12 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
           const projectsData = section;
 
           return (
-            <section key={`projects-${index}`} id="section-projects" className="py-20 px-4 bg-white">
+            <section
+              key={`projects-${index}`}
+              id="section-projects"
+              className="py-20 px-4"
+              style={{ backgroundColor: projectsData.backgroundColor || '#FFFFFF' }}
+            >
               <div className="max-w-6xl mx-auto">
                 <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
                   {projectsData.title}
@@ -287,7 +302,12 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
           const testimonialsData = section;
 
           return (
-            <section key={`testimonials-${index}`} id="section-testimonials" className="py-20 px-4 bg-slate-50">
+            <section
+              key={`testimonials-${index}`}
+              id="section-testimonials"
+              className="py-20 px-4"
+              style={{ backgroundColor: testimonialsData.backgroundColor || '#F8FAFC' }}
+            >
               <div className="max-w-6xl mx-auto">
                 <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
                   {testimonialsData.title}
@@ -314,7 +334,12 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
           const contactData = section;
 
           return (
-            <section key={`contact-${index}`} id="section-contact" className="py-20 px-4 bg-white">
+            <section
+              key={`contact-${index}`}
+              id="section-contact"
+              className="py-20 px-4"
+              style={{ backgroundColor: contactData.backgroundColor || '#FFFFFF' }}
+            >
               <div className="max-w-4xl mx-auto text-center">
                 <h2 className="text-4xl font-bold mb-8 text-slate-900">{contactData.title}</h2>
                 <div className="flex justify-center gap-6">
