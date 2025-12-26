@@ -1,12 +1,76 @@
 import { useState, useEffect } from 'react';
 import { supabase, PortfolioV2, PortfolioSection } from '../lib/supabase';
 import { X, Mail, Phone, ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { PortfolioNavbar } from './PortfolioNavbar';
 
 type PortfolioViewProps = {
   slug?: string;
   onBack?: () => void;
 };
+
+// Helper function to generate animation variants
+function getAnimationVariants(animation?: { enabled: boolean; type: string; duration?: number; delay?: number }) {
+  if (!animation?.enabled) {
+    return {};
+  }
+
+  const duration = (animation.duration || 600) / 1000; // Convert to seconds
+  const delay = (animation.delay || 0) / 1000;
+
+  const variants: any = {
+    hidden: {},
+    visible: {
+      transition: {
+        duration,
+        delay,
+        ease: 'easeOut',
+      },
+    },
+  };
+
+  switch (animation.type) {
+    case 'fade':
+      variants.hidden.opacity = 0;
+      variants.visible.opacity = 1;
+      break;
+    case 'slide-up':
+      variants.hidden.opacity = 0;
+      variants.hidden.y = 50;
+      variants.visible.opacity = 1;
+      variants.visible.y = 0;
+      break;
+    case 'slide-down':
+      variants.hidden.opacity = 0;
+      variants.hidden.y = -50;
+      variants.visible.opacity = 1;
+      variants.visible.y = 0;
+      break;
+    case 'slide-left':
+      variants.hidden.opacity = 0;
+      variants.hidden.x = 50;
+      variants.visible.opacity = 1;
+      variants.visible.x = 0;
+      break;
+    case 'slide-right':
+      variants.hidden.opacity = 0;
+      variants.hidden.x = -50;
+      variants.visible.opacity = 1;
+      variants.visible.x = 0;
+      break;
+    case 'zoom':
+      variants.hidden.opacity = 0;
+      variants.hidden.scale = 0.8;
+      variants.visible.opacity = 1;
+      variants.visible.scale = 1;
+      break;
+    default:
+      variants.hidden.opacity = 0;
+      variants.visible.opacity = 1;
+  }
+
+  return variants;
+}
 
 export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
   const [loading, setLoading] = useState(true);
@@ -141,6 +205,9 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
             };
           }
 
+          const heroVariants = getAnimationVariants(heroData.animation);
+          const hasAnimation = heroData.animation?.enabled;
+
           return (
             <section
               key={`hero-${index}`}
@@ -159,7 +226,13 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                   />
                 </div>
               )}
-              <div className="relative text-center max-w-4xl mx-auto">
+              <motion.div
+                className="relative text-center max-w-4xl mx-auto"
+                initial={hasAnimation ? "hidden" : false}
+                whileInView={hasAnimation ? "visible" : undefined}
+                viewport={{ once: true, margin: "-100px" }}
+                variants={heroVariants}
+              >
                 <h1
                   className="text-5xl md:text-7xl font-bold mb-6"
                   style={{
@@ -178,7 +251,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                 >
                   {heroData.subtitle}
                 </p>
-              </div>
+              </motion.div>
             </section>
           );
         }
@@ -194,6 +267,9 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
             triangle: 'clip-triangle',
           };
 
+          const aboutVariants = getAnimationVariants(aboutData.animation);
+          const hasAnimation = aboutData.animation?.enabled;
+
           return (
             <section
               key={`about-${index}`}
@@ -201,7 +277,13 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
               className="py-20 px-4"
               style={{ backgroundColor: aboutData.backgroundColor || '#FFFFFF' }}
             >
-              <div className="max-w-6xl mx-auto">
+              <motion.div
+                className="max-w-6xl mx-auto"
+                initial={hasAnimation ? "hidden" : false}
+                whileInView={hasAnimation ? "visible" : undefined}
+                viewport={{ once: true, margin: "-100px" }}
+                variants={aboutVariants}
+              >
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                   {aboutData.image && (
                     <div className="flex justify-center">
@@ -226,7 +308,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                     </p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </section>
           );
         }
@@ -235,6 +317,9 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         if (section.type === 'skills') {
           const skillsData = section;
 
+          const skillsVariants = getAnimationVariants(skillsData.animation);
+          const hasAnimation = skillsData.animation?.enabled;
+
           return (
             <section
               key={`skills-${index}`}
@@ -242,7 +327,13 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
               className="py-20 px-4"
               style={{ backgroundColor: skillsData.backgroundColor || '#F8FAFC' }}
             >
-              <div className="max-w-6xl mx-auto">
+              <motion.div
+                className="max-w-6xl mx-auto"
+                initial={hasAnimation ? "hidden" : false}
+                whileInView={hasAnimation ? "visible" : undefined}
+                viewport={{ once: true, margin: "-100px" }}
+                variants={skillsVariants}
+              >
                 <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: skillsData.font || 'Inter' }}>
                   {skillsData.title}
                 </h2>
@@ -262,7 +353,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                     </div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             </section>
           );
         }
@@ -271,6 +362,9 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         if (section.type === 'experience') {
           const experienceData = section;
 
+          const experienceVariants = getAnimationVariants(experienceData.animation);
+          const hasAnimation = experienceData.animation?.enabled;
+
           return (
             <section
               key={`experience-${index}`}
@@ -278,7 +372,13 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
               className="py-20 px-4"
               style={{ backgroundColor: experienceData.backgroundColor || '#FFFFFF' }}
             >
-              <div className="max-w-6xl mx-auto">
+              <motion.div
+                className="max-w-6xl mx-auto"
+                initial={hasAnimation ? "hidden" : false}
+                whileInView={hasAnimation ? "visible" : undefined}
+                viewport={{ once: true, margin: "-100px" }}
+                variants={experienceVariants}
+              >
                 <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: experienceData.font || 'Inter' }}>
                   {experienceData.title}
                 </h2>
@@ -314,7 +414,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                     </div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             </section>
           );
         }
@@ -323,6 +423,9 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         if (section.type === 'projects') {
           const projectsData = section;
 
+          const projectsVariants = getAnimationVariants(projectsData.animation);
+          const hasAnimation = projectsData.animation?.enabled;
+
           return (
             <section
               key={`projects-${index}`}
@@ -330,7 +433,13 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
               className="py-20 px-4"
               style={{ backgroundColor: projectsData.backgroundColor || '#FFFFFF' }}
             >
-              <div className="max-w-6xl mx-auto">
+              <motion.div
+                className="max-w-6xl mx-auto"
+                initial={hasAnimation ? "hidden" : false}
+                whileInView={hasAnimation ? "visible" : undefined}
+                viewport={{ once: true, margin: "-100px" }}
+                variants={projectsVariants}
+              >
                 <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: projectsData.font || 'Inter' }}>
                   {projectsData.title}
                 </h2>
@@ -390,7 +499,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                     </div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             </section>
           );
         }
@@ -399,6 +508,9 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         if (section.type === 'testimonials') {
           const testimonialsData = section;
 
+          const testimonialsVariants = getAnimationVariants(testimonialsData.animation);
+          const hasAnimation = testimonialsData.animation?.enabled;
+
           return (
             <section
               key={`testimonials-${index}`}
@@ -406,7 +518,13 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
               className="py-20 px-4"
               style={{ backgroundColor: testimonialsData.backgroundColor || '#F8FAFC' }}
             >
-              <div className="max-w-6xl mx-auto">
+              <motion.div
+                className="max-w-6xl mx-auto"
+                initial={hasAnimation ? "hidden" : false}
+                whileInView={hasAnimation ? "visible" : undefined}
+                viewport={{ once: true, margin: "-100px" }}
+                variants={testimonialsVariants}
+              >
                 <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: testimonialsData.font || 'Inter' }}>
                   {testimonialsData.title}
                 </h2>
@@ -422,7 +540,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                     </div>
                   ))}
                 </div>
-              </div>
+              </motion.div>
             </section>
           );
         }
@@ -431,6 +549,9 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         if (section.type === 'contact') {
           const contactData = section;
 
+          const contactVariants = getAnimationVariants(contactData.animation);
+          const hasAnimation = contactData.animation?.enabled;
+
           return (
             <section
               key={`contact-${index}`}
@@ -438,7 +559,13 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
               className="py-20 px-4"
               style={{ backgroundColor: contactData.backgroundColor || '#FFFFFF' }}
             >
-              <div className="max-w-4xl mx-auto text-center">
+              <motion.div
+                className="max-w-4xl mx-auto text-center"
+                initial={hasAnimation ? "hidden" : false}
+                whileInView={hasAnimation ? "visible" : undefined}
+                viewport={{ once: true, margin: "-100px" }}
+                variants={contactVariants}
+              >
                 <h2 className="text-4xl font-bold mb-8 text-slate-900" style={{ fontFamily: contactData.font || 'Inter' }}>{contactData.title}</h2>
                 <div className="flex justify-center gap-6">
                   {contactData.method === 'email' && contactData.email && (
@@ -462,7 +589,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                     </a>
                   )}
                 </div>
-              </div>
+              </motion.div>
             </section>
           );
         }

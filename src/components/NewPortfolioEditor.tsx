@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Plus, Monitor, Smartphone, Trash2, ChevronUp, ChevronDown, AlertCircle, Settings } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { NewPortfolioData, PortfolioSection, SectionType, TIER_LIMITS } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { canAddSection, countTotalProjectCards, getTierBadge, shouldFreezeDueToLimits } from '../lib/tierUtils';
@@ -20,6 +21,69 @@ interface NewPortfolioEditorProps {
   initialData?: NewPortfolioData;
   onSave: (data: NewPortfolioData, publish: boolean) => Promise<void>;
   onCancel: () => void;
+}
+
+// Helper function to generate animation variants
+function getAnimationVariants(animation?: { enabled: boolean; type: string; duration?: number; delay?: number }) {
+  if (!animation?.enabled) {
+    return {};
+  }
+
+  const duration = (animation.duration || 600) / 1000; // Convert to seconds
+  const delay = (animation.delay || 0) / 1000;
+
+  const variants: any = {
+    hidden: {},
+    visible: {
+      transition: {
+        duration,
+        delay,
+        ease: 'easeOut',
+      },
+    },
+  };
+
+  switch (animation.type) {
+    case 'fade':
+      variants.hidden.opacity = 0;
+      variants.visible.opacity = 1;
+      break;
+    case 'slide-up':
+      variants.hidden.opacity = 0;
+      variants.hidden.y = 50;
+      variants.visible.opacity = 1;
+      variants.visible.y = 0;
+      break;
+    case 'slide-down':
+      variants.hidden.opacity = 0;
+      variants.hidden.y = -50;
+      variants.visible.opacity = 1;
+      variants.visible.y = 0;
+      break;
+    case 'slide-left':
+      variants.hidden.opacity = 0;
+      variants.hidden.x = 50;
+      variants.visible.opacity = 1;
+      variants.visible.x = 0;
+      break;
+    case 'slide-right':
+      variants.hidden.opacity = 0;
+      variants.hidden.x = -50;
+      variants.visible.opacity = 1;
+      variants.visible.x = 0;
+      break;
+    case 'zoom':
+      variants.hidden.opacity = 0;
+      variants.hidden.scale = 0.8;
+      variants.visible.opacity = 1;
+      variants.visible.scale = 1;
+      break;
+    default:
+      variants.hidden.opacity = 0;
+      variants.visible.opacity = 1;
+  }
+
+  return variants;
 }
 
 export default function NewPortfolioEditor({ initialData, onSave, onCancel }: NewPortfolioEditorProps) {
@@ -495,6 +559,9 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                     };
                   }
 
+                  const heroVariants = getAnimationVariants(section.animation);
+                  const hasAnimation = section.animation?.enabled;
+
                   return (
                     <section
                       key={`hero-${index}`}
@@ -513,7 +580,13 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                           />
                         </div>
                       )}
-                      <div className="relative text-center max-w-4xl mx-auto">
+                      <motion.div
+                        className="relative text-center max-w-4xl mx-auto"
+                        initial={hasAnimation ? "hidden" : false}
+                        whileInView={hasAnimation ? "visible" : undefined}
+                        viewport={{ once: true, margin: "-100px" }}
+                        variants={heroVariants}
+                      >
                         <h1
                           className="text-5xl md:text-7xl font-bold mb-6"
                           style={{
@@ -532,7 +605,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                         >
                           {section.subtitle}
                         </p>
-                      </div>
+                      </motion.div>
                     </section>
                   );
                 }
@@ -547,6 +620,9 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                     triangle: 'clip-triangle',
                   };
 
+                  const aboutVariants = getAnimationVariants(section.animation);
+                  const hasAnimation = section.animation?.enabled;
+
                   return (
                     <section
                       key={`about-${index}`}
@@ -554,7 +630,13 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                       className="py-20 px-4"
                       style={{ backgroundColor: section.backgroundColor || '#FFFFFF' }}
                     >
-                      <div className="max-w-6xl mx-auto">
+                      <motion.div
+                        className="max-w-6xl mx-auto"
+                        initial={hasAnimation ? "hidden" : false}
+                        whileInView={hasAnimation ? "visible" : undefined}
+                        viewport={{ once: true, margin: "-100px" }}
+                        variants={aboutVariants}
+                      >
                         <div className="grid md:grid-cols-2 gap-12 items-center">
                           {section.image && (
                             <div className="flex justify-center">
@@ -579,13 +661,16 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                             </p>
                           </div>
                         </div>
-                      </div>
+                      </motion.div>
                     </section>
                   );
                 }
 
                 // SKILLS SECTION
                 if (section.type === 'skills') {
+                  const skillsVariants = getAnimationVariants(section.animation);
+                  const hasAnimation = section.animation?.enabled;
+
                   return (
                     <section
                       key={`skills-${index}`}
@@ -593,7 +678,13 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                       className="py-20 px-4"
                       style={{ backgroundColor: section.backgroundColor || '#F8FAFC' }}
                     >
-                      <div className="max-w-6xl mx-auto">
+                      <motion.div
+                        className="max-w-6xl mx-auto"
+                        initial={hasAnimation ? "hidden" : false}
+                        whileInView={hasAnimation ? "visible" : undefined}
+                        viewport={{ once: true, margin: "-100px" }}
+                        variants={skillsVariants}
+                      >
                         <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: section.font || 'Inter' }}>
                           {section.title}
                         </h2>
@@ -613,13 +704,16 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                             </div>
                           ))}
                         </div>
-                      </div>
+                      </motion.div>
                     </section>
                   );
                 }
 
                 // EXPERIENCE SECTION
                 if (section.type === 'experience') {
+                  const experienceVariants = getAnimationVariants(section.animation);
+                  const hasAnimation = section.animation?.enabled;
+
                   return (
                     <section
                       key={`experience-${index}`}
@@ -627,7 +721,13 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                       className="py-20 px-4"
                       style={{ backgroundColor: section.backgroundColor || '#FFFFFF' }}
                     >
-                      <div className="max-w-6xl mx-auto">
+                      <motion.div
+                        className="max-w-6xl mx-auto"
+                        initial={hasAnimation ? "hidden" : false}
+                        whileInView={hasAnimation ? "visible" : undefined}
+                        viewport={{ once: true, margin: "-100px" }}
+                        variants={experienceVariants}
+                      >
                         <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: section.font || 'Inter' }}>
                           {section.title}
                         </h2>
@@ -662,13 +762,16 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                             </div>
                           ))}
                         </div>
-                      </div>
+                      </motion.div>
                     </section>
                   );
                 }
 
                 // PROJECTS SECTION (New Design)
                 if (section.type === 'projects') {
+                  const projectsVariants = getAnimationVariants(section.animation);
+                  const hasAnimation = section.animation?.enabled;
+
                   return (
                     <section
                       key={`projects-${index}`}
@@ -676,7 +779,13 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                       className="py-20 px-4"
                       style={{ backgroundColor: section.backgroundColor || '#FFFFFF' }}
                     >
-                      <div className="max-w-6xl mx-auto">
+                      <motion.div
+                        className="max-w-6xl mx-auto"
+                        initial={hasAnimation ? "hidden" : false}
+                        whileInView={hasAnimation ? "visible" : undefined}
+                        viewport={{ once: true, margin: "-100px" }}
+                        variants={projectsVariants}
+                      >
                         <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: section.font || 'Inter' }}>
                           {section.title}
                         </h2>
@@ -735,13 +844,16 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                             </div>
                           ))}
                         </div>
-                      </div>
+                      </motion.div>
                     </section>
                   );
                 }
 
                 // TESTIMONIALS SECTION
                 if (section.type === 'testimonials') {
+                  const testimonialsVariants = getAnimationVariants(section.animation);
+                  const hasAnimation = section.animation?.enabled;
+
                   return (
                     <section
                       key={`testimonials-${index}`}
@@ -749,7 +861,13 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                       className="py-20 px-4"
                       style={{ backgroundColor: section.backgroundColor || '#F8FAFC' }}
                     >
-                      <div className="max-w-6xl mx-auto">
+                      <motion.div
+                        className="max-w-6xl mx-auto"
+                        initial={hasAnimation ? "hidden" : false}
+                        whileInView={hasAnimation ? "visible" : undefined}
+                        viewport={{ once: true, margin: "-100px" }}
+                        variants={testimonialsVariants}
+                      >
                         <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: section.font || 'Inter' }}>
                           {section.title}
                         </h2>
@@ -765,13 +883,16 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                             </div>
                           ))}
                         </div>
-                      </div>
+                      </motion.div>
                     </section>
                   );
                 }
 
                 // CONTACT SECTION
                 if (section.type === 'contact') {
+                  const contactVariants = getAnimationVariants(section.animation);
+                  const hasAnimation = section.animation?.enabled;
+
                   return (
                     <section
                       key={`contact-${index}`}
@@ -779,12 +900,18 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                       className="py-20 px-4"
                       style={{ backgroundColor: section.backgroundColor || '#FFFFFF' }}
                     >
-                      <div className="max-w-4xl mx-auto text-center">
+                      <motion.div
+                        className="max-w-4xl mx-auto text-center"
+                        initial={hasAnimation ? "hidden" : false}
+                        whileInView={hasAnimation ? "visible" : undefined}
+                        viewport={{ once: true, margin: "-100px" }}
+                        variants={contactVariants}
+                      >
                         <h2 className="text-4xl font-bold mb-8 text-slate-900" style={{ fontFamily: section.font || 'Inter' }}>{section.title}</h2>
                         <p className="text-slate-600">
                           Contact method: {section.method === 'email' ? 'Email' : 'WhatsApp'}
                         </p>
-                      </div>
+                      </motion.div>
                     </section>
                   );
                 }
