@@ -204,8 +204,18 @@ export type NewPortfolioData = {
     headingColor: string;
     bodyColor: string;
   };
+  navbar?: NavbarConfig;
   created_at?: string;
   updated_at?: string;
+};
+
+// Navbar configuration type
+export type NavbarConfig = {
+  showBranding: boolean;
+  brandingText?: string;
+  opacity: number; // 0-100
+  backgroundColor: string; // Hex color for navbar background
+  textColor: string; // Hex color for navbar text
 };
 
 // Database table structure for portfolios_v2
@@ -223,6 +233,7 @@ export type PortfolioV2 = {
       headingColor: string;
       bodyColor: string;
     };
+    navbar?: NavbarConfig;
   };
   created_at: string;
   updated_at: string;

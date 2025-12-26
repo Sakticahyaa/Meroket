@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase, PortfolioV2, PortfolioSection } from '../lib/supabase';
 import { X, Mail, Phone, ChevronLeft, ChevronRight } from 'lucide-react';
+import { PortfolioNavbar } from './PortfolioNavbar';
 
 type PortfolioViewProps = {
   slug?: string;
@@ -44,9 +45,6 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         }
       }
 
-      console.log('Portfolio loaded:', data);
-      console.log('Sections:', data.portfolio_data?.sections);
-
       setPortfolio(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to load portfolio');
@@ -79,8 +77,6 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
 
   const sections = portfolio.portfolio_data?.sections || [];
 
-  console.log('Rendering portfolio with sections:', sections);
-
   // If no sections, show a message
   if (sections.length === 0) {
     return (
@@ -95,8 +91,14 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
 
   return (
     <div className="min-h-screen bg-white">
+      {/* Portfolio Navigation Bar */}
+      <PortfolioNavbar
+        sections={sections}
+        config={portfolio.portfolio_data?.navbar}
+      />
+
       {onBack && (
-        <div className="fixed top-4 left-4 z-50">
+        <div className="fixed top-4 left-4 z-30">
           <button
             onClick={onBack}
             className="flex items-center gap-2 px-4 py-2 bg-white/90 backdrop-blur-sm text-slate-700 rounded-lg hover:bg-white shadow-lg"
@@ -171,7 +173,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
           };
 
           return (
-            <section key={`about-${index}`} className="py-20 px-4 bg-white">
+            <section key={`about-${index}`} id="section-about" className="py-20 px-4 bg-white">
               <div className="max-w-6xl mx-auto">
                 <div className="grid md:grid-cols-2 gap-12 items-center">
                   {aboutData.image && (
@@ -207,7 +209,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
           const skillsData = section;
 
           return (
-            <section key={`skills-${index}`} className="py-20 px-4 bg-slate-50">
+            <section key={`skills-${index}`} id="section-skills" className="py-20 px-4 bg-slate-50">
               <div className="max-w-6xl mx-auto">
                 <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
                   {skillsData.title}
@@ -238,7 +240,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
           const projectsData = section;
 
           return (
-            <section key={`projects-${index}`} className="py-20 px-4 bg-white">
+            <section key={`projects-${index}`} id="section-projects" className="py-20 px-4 bg-white">
               <div className="max-w-6xl mx-auto">
                 <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
                   {projectsData.title}
@@ -285,7 +287,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
           const testimonialsData = section;
 
           return (
-            <section key={`testimonials-${index}`} className="py-20 px-4 bg-slate-50">
+            <section key={`testimonials-${index}`} id="section-testimonials" className="py-20 px-4 bg-slate-50">
               <div className="max-w-6xl mx-auto">
                 <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
                   {testimonialsData.title}
@@ -312,7 +314,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
           const contactData = section;
 
           return (
-            <section key={`contact-${index}`} className="py-20 px-4 bg-white">
+            <section key={`contact-${index}`} id="section-contact" className="py-20 px-4 bg-white">
               <div className="max-w-4xl mx-auto text-center">
                 <h2 className="text-4xl font-bold mb-8 text-slate-900">{contactData.title}</h2>
                 <div className="flex justify-center gap-6">

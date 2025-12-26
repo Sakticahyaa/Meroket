@@ -129,6 +129,7 @@ function EditorRoute() {
         portfolio_data: JSON.stringify({
           sections: data.sections,
           theme: data.theme,
+          navbar: data.navbar,
         }),
       };
 
@@ -148,7 +149,6 @@ function EditorRoute() {
       if (error) throw error;
 
       alert(publish ? 'Portfolio published successfully!' : 'Portfolio saved as draft!');
-      navigate('/dashboard');
     } catch (error: any) {
       console.error('Error saving portfolio:', error);
       alert(`Failed to save portfolio: ${error.message}`);
@@ -252,6 +252,7 @@ function DashboardApp() {
         portfolio_data: JSON.stringify({
           sections: data.sections,
           theme: data.theme,
+          navbar: data.navbar,
         }),
       };
 
@@ -272,7 +273,6 @@ function DashboardApp() {
       if (error) throw error;
 
       alert(publish ? 'Portfolio published successfully!' : 'Portfolio saved as draft!');
-      navigate('/dashboard');
     } catch (error: any) {
       console.error('Error saving portfolio:', error);
       alert(`Failed to save portfolio: ${error.message}`);

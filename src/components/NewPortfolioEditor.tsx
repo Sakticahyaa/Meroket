@@ -1,9 +1,11 @@
 import { useState } from 'react';
-import { Plus, Monitor, Smartphone, Trash2, ChevronUp, ChevronDown, AlertCircle } from 'lucide-react';
+import { Plus, Monitor, Smartphone, Trash2, ChevronUp, ChevronDown, AlertCircle, Settings } from 'lucide-react';
 import { NewPortfolioData, PortfolioSection, SectionType, TIER_LIMITS } from '../lib/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { canAddSection, countTotalProjectCards, getTierBadge, shouldFreezeDueToLimits } from '../lib/tierUtils';
 import { FrozenPortfolioNotice } from './FrozenPortfolioNotice';
+import { PortfolioNavbar } from './PortfolioNavbar';
+import { NavbarEditor } from './NavbarEditor';
 import {
   HeroEditor,
   AboutEditor,
@@ -37,6 +39,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
   );
   const [selectedSectionIndex, setSelectedSectionIndex] = useState<number | null>(null);
   const [showAddSection, setShowAddSection] = useState(false);
+  const [showNavbarEditor, setShowNavbarEditor] = useState(false);
 
   const userTier = profile?.user_tier || 'free';
   const tierLimits = TIER_LIMITS[userTier];
@@ -273,6 +276,25 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
               </div>
             </div>
 
+            {/* Navbar Button */}
+            <button
+              onClick={() => {
+                setShowNavbarEditor(true);
+                setSelectedSectionIndex(null);
+              }}
+              className={`w-full mb-4 p-3 border rounded-lg transition-colors flex items-center gap-3 ${
+                showNavbarEditor
+                  ? 'border-blue-500 bg-blue-50'
+                  : 'border-gray-200 hover:border-gray-300 bg-white'
+              }`}
+            >
+              <Settings className="w-5 h-5 text-gray-600" />
+              <div className="flex-1 text-left">
+                <p className="font-medium text-gray-900">Navbar Settings</p>
+                <p className="text-sm text-gray-500">Customize navigation bar</p>
+              </div>
+            </button>
+
             {/* Section List */}
             <div className="space-y-2">
               {portfolioData.sections.map((section, index) => (
@@ -283,7 +305,10 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                       ? 'border-blue-500 bg-blue-50'
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
-                  onClick={() => setSelectedSectionIndex(index)}
+                  onClick={() => {
+                    setSelectedSectionIndex(index);
+                    setShowNavbarEditor(false);
+                  }}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex-1">
@@ -400,93 +425,251 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
         </div>
 
         {/* Preview Area */}
-        <div className="flex-1 bg-gray-100 overflow-auto p-8">
+        <div className="flex-1 bg-gray-100 overflow-auto">
           <div
-            className={`mx-auto bg-white shadow-lg rounded-lg overflow-hidden transition-all ${
-              previewMode === 'mobile' ? 'max-w-md' : 'max-w-6xl'
+            className={`mx-auto bg-white transition-all origin-top relative ${
+              previewMode === 'mobile' ? 'max-w-md' : 'w-full'
             }`}
+            style={{
+              minHeight: '100%',
+              transform: selectedSectionIndex !== null ? 'scale(0.75)' : 'scale(1)',
+              transformOrigin: 'top center',
+            }}
           >
+            {/* Portfolio Navbar Preview */}
+            <PortfolioNavbar sections={portfolioData.sections} config={portfolioData.navbar} />
+
             {portfolioData.sections.length === 0 ? (
               <div className="p-12 text-center text-gray-400">
                 <p>Add your first section to get started</p>
               </div>
             ) : (
-              portfolioData.sections.map((section, index) => (
-                <div key={index} className="preview-section">
-                  {/* Preview rendering will be implemented in PortfolioPreview component */}
-                  <div className="p-8 border-b border-gray-200">
-                    <p className="text-sm text-gray-500 mb-2">{section.type.toUpperCase()}</p>
-                    {section.type === 'hero' && (
-                      <div
-                        style={{
-                          background:
-                            section.backgroundType === 'color'
-                              ? section.backgroundColor
-                              : section.backgroundType === 'gradient'
-                              ? getGradientCSS(
-                                  section.gradientStart || '#667eea',
-                                  section.gradientEnd || '#764ba2',
-                                  section.gradientDirection || 'horizontal'
-                                )
-                              : `url(${section.backgroundImage})`,
-                          backgroundSize: 'cover',
-                          backgroundPosition: 'center',
-                        }}
-                        className="p-12 text-center"
-                      >
-                        <h1 style={{ color: section.titleColor }} className="text-4xl font-bold mb-4">
+              portfolioData.sections.map((section: any, index) => {
+                // HERO SECTION
+                if (section.type === 'hero') {
+                  let bgStyle: any = {};
+                  if (section.backgroundType === 'color') {
+                    bgStyle = { backgroundColor: section.backgroundColor || '#FFFFFF' };
+                  } else if (section.backgroundType === 'gradient') {
+                    const direction =
+                      section.gradientDirection === 'horizontal'
+                        ? 'to right'
+                        : section.gradientDirection === 'vertical'
+                        ? 'to bottom'
+                        : 'to bottom right';
+                    bgStyle = {
+                      background: `linear-gradient(${direction}, ${section.gradientStart || '#667eea'}, ${section.gradientEnd || '#764ba2'})`,
+                    };
+                  } else if (section.backgroundType === 'image' && section.backgroundImage) {
+                    bgStyle = {
+                      backgroundImage: `url(${section.backgroundImage})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                    };
+                  }
+
+                  return (
+                    <section
+                      key={`hero-${index}`}
+                      className="relative min-h-screen flex items-center justify-center px-4"
+                      style={bgStyle}
+                    >
+                      {section.backgroundType === 'image' && (
+                        <div className="absolute inset-0 bg-black/30"></div>
+                      )}
+                      <div className="relative text-center max-w-4xl mx-auto">
+                        <h1
+                          className="text-5xl md:text-7xl font-bold mb-6"
+                          style={{ color: section.titleColor || '#1F2937' }}
+                        >
                           {section.title}
                         </h1>
-                        <p style={{ color: section.subtitleColor }} className="text-xl">
+                        <p
+                          className="text-2xl md:text-3xl"
+                          style={{ color: section.subtitleColor || '#6B7280' }}
+                        >
                           {section.subtitle}
                         </p>
                       </div>
-                    )}
-                    {section.type === 'about' && (
-                      <div>
-                        <h2 className="text-2xl font-bold mb-4">{section.title}</h2>
-                        <p>{section.description}</p>
+                    </section>
+                  );
+                }
+
+                // ABOUT SECTION
+                if (section.type === 'about') {
+                  const shapeClasses: any = {
+                    circle: 'rounded-full',
+                    square: 'rounded-none',
+                    rounded: 'rounded-2xl',
+                    hexagon: 'clip-hexagon',
+                    triangle: 'clip-triangle',
+                  };
+
+                  return (
+                    <section key={`about-${index}`} id="section-about" className="py-20 px-4 bg-white">
+                      <div className="max-w-6xl mx-auto">
+                        <div className="grid md:grid-cols-2 gap-12 items-center">
+                          {section.image && (
+                            <div className="flex justify-center">
+                              <img
+                                src={section.image}
+                                alt="Profile"
+                                className={`w-80 h-80 object-cover ${shapeClasses[section.imageShape] || 'rounded-full'}`}
+                                style={
+                                  section.imageBorder
+                                    ? {
+                                        border: `${section.borderWidth || 4}px solid ${section.borderColor || '#000'}`,
+                                      }
+                                    : {}
+                                }
+                              />
+                            </div>
+                          )}
+                          <div>
+                            <h2 className="text-4xl font-bold mb-6 text-slate-900">{section.title}</h2>
+                            <p className="text-lg leading-relaxed text-slate-700 whitespace-pre-wrap">
+                              {section.description}
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                    )}
-                    {section.type === 'skills' && (
-                      <div>
-                        <h2 className="text-2xl font-bold mb-4">{section.title}</h2>
-                        <p className="text-gray-500">{section.cards.length} skills</p>
+                    </section>
+                  );
+                }
+
+                // SKILLS SECTION
+                if (section.type === 'skills') {
+                  return (
+                    <section key={`skills-${index}`} id="section-skills" className="py-20 px-4 bg-slate-50">
+                      <div className="max-w-6xl mx-auto">
+                        <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
+                          {section.title}
+                        </h2>
+                        <div className="grid md:grid-cols-3 gap-8">
+                          {section.cards?.map((card: any) => (
+                            <div
+                              key={card.id}
+                              className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+                            >
+                              {card.icon && (
+                                <div className="w-16 h-16 mb-4">
+                                  <img src={card.icon} alt={card.title} className="w-full h-full object-contain" />
+                                </div>
+                              )}
+                              <h3 className="text-xl font-bold mb-3 text-slate-900">{card.title}</h3>
+                              <p className="text-slate-600">{card.description}</p>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    )}
-                    {section.type === 'projects' && (
-                      <div>
-                        <h2 className="text-2xl font-bold mb-4">{section.title}</h2>
-                        <p className="text-gray-500">{section.cards.length} projects</p>
+                    </section>
+                  );
+                }
+
+                // PROJECTS SECTION
+                if (section.type === 'projects') {
+                  return (
+                    <section key={`projects-${index}`} id="section-projects" className="py-20 px-4 bg-white">
+                      <div className="max-w-6xl mx-auto">
+                        <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
+                          {section.title}
+                        </h2>
+                        <div className="grid md:grid-cols-2 gap-8">
+                          {section.cards?.map((card: any) => (
+                            <div
+                              key={card.id}
+                              className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-xl transition-shadow"
+                            >
+                              {card.image && (
+                                <div
+                                  className="h-64 bg-cover bg-center"
+                                  style={{ backgroundImage: `url(${card.image})` }}
+                                />
+                              )}
+                              <div className="p-6">
+                                <h3 className="text-2xl font-bold mb-3 text-slate-900">{card.title}</h3>
+                                <p className="text-slate-600 mb-3">{card.shortDescription}</p>
+                                {card.tags && card.tags.length > 0 && (
+                                  <div className="flex flex-wrap gap-2 mt-4">
+                                    {card.tags.map((tag: string, idx: number) => (
+                                      <span
+                                        key={idx}
+                                        className="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm"
+                                      >
+                                        {tag}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    )}
-                    {section.type === 'testimonials' && (
-                      <div>
-                        <h2 className="text-2xl font-bold mb-4">{section.title}</h2>
-                        <p className="text-gray-500">{section.cards.length} testimonials</p>
+                    </section>
+                  );
+                }
+
+                // TESTIMONIALS SECTION
+                if (section.type === 'testimonials') {
+                  return (
+                    <section key={`testimonials-${index}`} id="section-testimonials" className="py-20 px-4 bg-slate-50">
+                      <div className="max-w-6xl mx-auto">
+                        <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
+                          {section.title}
+                        </h2>
+                        <div className="grid md:grid-cols-3 gap-8">
+                          {section.cards?.map((card: any) => (
+                            <div key={card.id} className="bg-white p-8 rounded-xl shadow-lg">
+                              <div className="text-4xl text-blue-600 mb-4">"</div>
+                              <p className="text-slate-700 mb-6 italic">{card.text}</p>
+                              <div className="border-t border-slate-200 pt-4">
+                                <p className="font-bold text-slate-900">{card.author}</p>
+                                {card.role && <p className="text-sm text-slate-600">{card.role}</p>}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    )}
-                    {section.type === 'contact' && (
-                      <div>
-                        <h2 className="text-2xl font-bold mb-4">{section.title}</h2>
-                        <p className="text-gray-500">Method: {section.method}</p>
+                    </section>
+                  );
+                }
+
+                // CONTACT SECTION
+                if (section.type === 'contact') {
+                  return (
+                    <section key={`contact-${index}`} id="section-contact" className="py-20 px-4 bg-white">
+                      <div className="max-w-4xl mx-auto text-center">
+                        <h2 className="text-4xl font-bold mb-8 text-slate-900">{section.title}</h2>
+                        <p className="text-slate-600">
+                          Contact method: {section.method === 'email' ? 'Email' : 'WhatsApp'}
+                        </p>
                       </div>
-                    )}
-                  </div>
-                </div>
-              ))
+                    </section>
+                  );
+                }
+
+                return null;
+              })
             )}
           </div>
         </div>
 
-        {/* Editor Panel - Shows when a section is selected */}
-        {selectedSectionIndex !== null && (
+        {/* Editor Panel - Shows when a section is selected or navbar editor is open */}
+        {(selectedSectionIndex !== null || showNavbarEditor) && (
           <div className="w-96 bg-white border-l border-gray-200 overflow-y-auto">
-            <div className="p-4">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4 capitalize">
-                Edit {portfolioData.sections[selectedSectionIndex].type}
-              </h2>
-              {portfolioData.sections[selectedSectionIndex].type === 'hero' && (
+            {showNavbarEditor ? (
+              <NavbarEditor
+                portfolioData={portfolioData}
+                onUpdate={setPortfolioData}
+                userFullName={profile?.full_name}
+              />
+            ) : selectedSectionIndex !== null && (
+              <div className="p-4">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4 capitalize">
+                  Edit {portfolioData.sections[selectedSectionIndex].type}
+                </h2>
+                {portfolioData.sections[selectedSectionIndex].type === 'hero' && (
                 <HeroEditor
                   section={portfolioData.sections[selectedSectionIndex] as any}
                   onChange={(updated) => updateSection(selectedSectionIndex, updated)}
@@ -525,6 +708,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                 />
               )}
             </div>
+            )}
           </div>
         )}
       </div>
