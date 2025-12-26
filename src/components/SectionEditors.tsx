@@ -12,7 +12,12 @@ import {
   ExperienceCard,
   ProjectItem,
   TestimonialCard,
+  AnimationSettings as AnimationSettingsType,
 } from '../lib/supabase';
+import { uploadImage } from '../lib/storageUtils';
+import { ImageCropperModal } from './ImageCropperModal';
+import { FontSelector } from './FontSelector';
+import { AnimationSettings } from './AnimationSettings';
 
 // Hero Section Editor
 export function HeroEditor({
@@ -22,6 +27,38 @@ export function HeroEditor({
   section: HeroSection;
   onChange: (section: HeroSection) => void;
 }) {
+  const [cropperOpen, setCropperOpen] = useState(false);
+  const [tempProfileImage, setTempProfileImage] = useState<string>('');
+  const [isUploadingProfile, setIsUploadingProfile] = useState(false);
+
+  const handleProfileImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setTempProfileImage(reader.result as string);
+        setCropperOpen(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleProfileCropComplete = async (croppedBlob: Blob) => {
+    setIsUploadingProfile(true);
+    try {
+      const file = new File([croppedBlob], 'profile.jpg', { type: 'image/jpeg' });
+      const url = await uploadImage(file, 'hero-profiles');
+      onChange({ ...section, profileImage: url });
+      setCropperOpen(false);
+      setTempProfileImage('');
+    } catch (error) {
+      console.error('Error uploading profile image:', error);
+      alert('Failed to upload profile image');
+    } finally {
+      setIsUploadingProfile(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div>
@@ -75,6 +112,31 @@ export function HeroEditor({
       {section.backgroundType === 'gradient' && (
         <div className="space-y-3">
           <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Gradient Type</label>
+            <div className="flex gap-2">
+              <button
+                onClick={() => onChange({ ...section, gradientType: 'linear' })}
+                className={`px-4 py-2 rounded-lg border ${
+                  (section.gradientType || 'linear') === 'linear'
+                    ? 'bg-blue-50 border-blue-500 text-blue-700'
+                    : 'border-gray-300 text-gray-700'
+                }`}
+              >
+                Linear
+              </button>
+              <button
+                onClick={() => onChange({ ...section, gradientType: 'radial' })}
+                className={`px-4 py-2 rounded-lg border ${
+                  section.gradientType === 'radial'
+                    ? 'bg-blue-50 border-blue-500 text-blue-700'
+                    : 'border-gray-300 text-gray-700'
+                }`}
+              >
+                Radial
+              </button>
+            </div>
+          </div>
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Start Color</label>
             <input
               type="color"
@@ -92,8 +154,9 @@ export function HeroEditor({
               className="w-full h-10 rounded border border-gray-300"
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Direction</label>
+          {section.gradientType !== 'radial' && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Direction</label>
             <div className="grid grid-cols-3 gap-2">
               <button
                 onClick={() => onChange({ ...section, gradientDirection: 'horizontal' })}
@@ -126,7 +189,8 @@ export function HeroEditor({
                 Diagonal
               </button>
             </div>
-          </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -161,6 +225,41 @@ export function HeroEditor({
           </div>
         </div>
       )}
+
+      {/* Profile Image Upload */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Profile Image (Optional)
+        </label>
+        <div className="flex flex-col gap-2">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleProfileImageSelect}
+            disabled={isUploadingProfile}
+            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+          />
+          {section.profileImage && (
+            <div className="relative w-32 h-32 rounded-full border-2 border-gray-300 overflow-hidden mx-auto">
+              <img
+                src={section.profileImage}
+                alt="Profile preview"
+                className="w-full h-full object-cover"
+              />
+              <button
+                onClick={() => onChange({ ...section, profileImage: undefined })}
+                className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600"
+                title="Remove profile image"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
+          <p className="text-xs text-gray-500 text-center">
+            Centered circular overlay on hero background
+          </p>
+        </div>
+      </div>
 
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
@@ -201,6 +300,40 @@ export function HeroEditor({
           className="w-full h-10 rounded border border-gray-300"
         />
       </div>
+
+      {/* Font Selectors */}
+      <FontSelector
+        value={section.titleFont || 'Inter'}
+        onChange={(font) => onChange({ ...section, titleFont: font })}
+        label="Title Font"
+      />
+
+      <FontSelector
+        value={section.subtitleFont || 'Inter'}
+        onChange={(font) => onChange({ ...section, subtitleFont: font })}
+        label="Subtitle Font"
+      />
+
+      {/* Animation Settings */}
+      <AnimationSettings
+        settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
+        onChange={(animation) => onChange({ ...section, animation })}
+      />
+
+      {/* Image Cropper Modal */}
+      {cropperOpen && (
+        <ImageCropperModal
+          isOpen={cropperOpen}
+          imageUrl={tempProfileImage}
+          onCropComplete={handleProfileCropComplete}
+          onCancel={() => {
+            setCropperOpen(false);
+            setTempProfileImage('');
+          }}
+          defaultAspect={1}
+          title="Crop Profile Image"
+        />
+      )}
     </div>
   );
 }
