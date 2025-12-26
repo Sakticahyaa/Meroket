@@ -208,6 +208,7 @@ function DashboardApp() {
               headingColor: '#1F2937',
               bodyColor: '#6B7280',
             },
+            navbar: parsedData.navbar,
             created_at: data.created_at,
             updated_at: data.updated_at,
           });
