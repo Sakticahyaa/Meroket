@@ -48,35 +48,29 @@ function getAnimationVariants(animation?: { enabled: boolean; type: string; dura
       variants.hidden.opacity = 0;
       variants.visible.opacity = 1;
       break;
-    case 'slide-up':
+    case 'slideUp':
       variants.hidden.opacity = 0;
       variants.hidden.y = 50;
       variants.visible.opacity = 1;
       variants.visible.y = 0;
       break;
-    case 'slide-down':
+    case 'slideDown':
       variants.hidden.opacity = 0;
       variants.hidden.y = -50;
       variants.visible.opacity = 1;
       variants.visible.y = 0;
       break;
-    case 'slide-left':
+    case 'slideLeft':
       variants.hidden.opacity = 0;
       variants.hidden.x = 50;
       variants.visible.opacity = 1;
       variants.visible.x = 0;
       break;
-    case 'slide-right':
+    case 'slideRight':
       variants.hidden.opacity = 0;
       variants.hidden.x = -50;
       variants.visible.opacity = 1;
       variants.visible.x = 0;
-      break;
-    case 'zoom':
-      variants.hidden.opacity = 0;
-      variants.hidden.scale = 0.8;
-      variants.visible.opacity = 1;
-      variants.visible.scale = 1;
       break;
     default:
       variants.hidden.opacity = 0;
