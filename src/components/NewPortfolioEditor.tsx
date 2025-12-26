@@ -400,10 +400,10 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                       <p className="text-sm text-gray-500">
                         {section.type === 'hero' && section.title}
                         {section.type === 'about' && section.title}
-                        {section.type === 'skills' && `${section.cards.length} items`}
-                        {section.type === 'experience' && `${section.cards.length} items`}
-                        {section.type === 'projects' && `${section.items.length} projects`}
-                        {section.type === 'testimonials' && `${section.cards.length} testimonials`}
+                        {section.type === 'skills' && `${section.cards?.length || 0} items`}
+                        {section.type === 'experience' && `${section.cards?.length || 0} items`}
+                        {section.type === 'projects' && `${section.items?.length || 0} projects`}
+                        {section.type === 'testimonials' && `${section.cards?.length || 0} testimonials`}
                         {section.type === 'contact' && section.title}
                       </p>
                     </div>
