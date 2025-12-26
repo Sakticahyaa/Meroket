@@ -573,8 +573,8 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                             </div>
                           )}
                           <div>
-                            <h2 className="text-4xl font-bold mb-6 text-slate-900">{section.title}</h2>
-                            <p className="text-lg leading-relaxed text-slate-700 whitespace-pre-wrap">
+                            <h2 className="text-4xl font-bold mb-6 text-slate-900" style={{ fontFamily: section.font || 'Inter' }}>{section.title}</h2>
+                            <p className="text-lg leading-relaxed text-slate-700 whitespace-pre-wrap" style={{ fontFamily: section.font || 'Inter' }}>
                               {section.description}
                             </p>
                           </div>
@@ -594,7 +594,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                       style={{ backgroundColor: section.backgroundColor || '#F8FAFC' }}
                     >
                       <div className="max-w-6xl mx-auto">
-                        <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
+                        <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: section.font || 'Inter' }}>
                           {section.title}
                         </h2>
                         <div className="grid md:grid-cols-3 gap-8">
@@ -628,7 +628,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                       style={{ backgroundColor: section.backgroundColor || '#FFFFFF' }}
                     >
                       <div className="max-w-6xl mx-auto">
-                        <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
+                        <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: section.font || 'Inter' }}>
                           {section.title}
                         </h2>
                         <div className="grid md:grid-cols-2 gap-8">
@@ -677,7 +677,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                       style={{ backgroundColor: section.backgroundColor || '#FFFFFF' }}
                     >
                       <div className="max-w-6xl mx-auto">
-                        <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
+                        <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: section.font || 'Inter' }}>
                           {section.title}
                         </h2>
                         <div className="space-y-8">
@@ -750,7 +750,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                       style={{ backgroundColor: section.backgroundColor || '#F8FAFC' }}
                     >
                       <div className="max-w-6xl mx-auto">
-                        <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
+                        <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: section.font || 'Inter' }}>
                           {section.title}
                         </h2>
                         <div className="grid md:grid-cols-3 gap-8">
@@ -780,7 +780,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                       style={{ backgroundColor: section.backgroundColor || '#FFFFFF' }}
                     >
                       <div className="max-w-4xl mx-auto text-center">
-                        <h2 className="text-4xl font-bold mb-8 text-slate-900">{section.title}</h2>
+                        <h2 className="text-4xl font-bold mb-8 text-slate-900" style={{ fontFamily: section.font || 'Inter' }}>{section.title}</h2>
                         <p className="text-slate-600">
                           Contact method: {section.method === 'email' ? 'Email' : 'WhatsApp'}
                         </p>

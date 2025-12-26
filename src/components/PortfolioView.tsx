@@ -220,8 +220,8 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                     </div>
                   )}
                   <div>
-                    <h2 className="text-4xl font-bold mb-6 text-slate-900">{aboutData.title}</h2>
-                    <p className="text-lg leading-relaxed text-slate-700 whitespace-pre-wrap">
+                    <h2 className="text-4xl font-bold mb-6 text-slate-900" style={{ fontFamily: aboutData.font || 'Inter' }}>{aboutData.title}</h2>
+                    <p className="text-lg leading-relaxed text-slate-700 whitespace-pre-wrap" style={{ fontFamily: aboutData.font || 'Inter' }}>
                       {aboutData.description}
                     </p>
                   </div>
@@ -243,7 +243,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
               style={{ backgroundColor: skillsData.backgroundColor || '#F8FAFC' }}
             >
               <div className="max-w-6xl mx-auto">
-                <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
+                <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: skillsData.font || 'Inter' }}>
                   {skillsData.title}
                 </h2>
                 <div className="grid md:grid-cols-3 gap-8">
@@ -279,7 +279,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
               style={{ backgroundColor: experienceData.backgroundColor || '#FFFFFF' }}
             >
               <div className="max-w-6xl mx-auto">
-                <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
+                <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: experienceData.font || 'Inter' }}>
                   {experienceData.title}
                 </h2>
                 <div className="grid md:grid-cols-2 gap-8">
@@ -331,7 +331,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
               style={{ backgroundColor: projectsData.backgroundColor || '#FFFFFF' }}
             >
               <div className="max-w-6xl mx-auto">
-                <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
+                <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: projectsData.font || 'Inter' }}>
                   {projectsData.title}
                 </h2>
                 <div className="space-y-8">
@@ -407,7 +407,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
               style={{ backgroundColor: testimonialsData.backgroundColor || '#F8FAFC' }}
             >
               <div className="max-w-6xl mx-auto">
-                <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
+                <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: testimonialsData.font || 'Inter' }}>
                   {testimonialsData.title}
                 </h2>
                 <div className="grid md:grid-cols-3 gap-8">
@@ -439,7 +439,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
               style={{ backgroundColor: contactData.backgroundColor || '#FFFFFF' }}
             >
               <div className="max-w-4xl mx-auto text-center">
-                <h2 className="text-4xl font-bold mb-8 text-slate-900">{contactData.title}</h2>
+                <h2 className="text-4xl font-bold mb-8 text-slate-900" style={{ fontFamily: contactData.font || 'Inter' }}>{contactData.title}</h2>
                 <div className="flex justify-center gap-6">
                   {contactData.method === 'email' && contactData.email && (
                     <a
