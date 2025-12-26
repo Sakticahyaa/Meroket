@@ -456,6 +456,19 @@ export function AboutEditor({
           className="w-full h-10 rounded border border-gray-300"
         />
       </div>
+
+      {/* Font Selector */}
+      <FontSelector
+        value={section.font || 'Inter'}
+        onChange={(font) => onChange({ ...section, font })}
+        label="Section Font"
+      />
+
+      {/* Animation Settings */}
+      <AnimationSettings
+        settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
+        onChange={(animation) => onChange({ ...section, animation })}
+      />
     </div>
   );
 }
@@ -601,6 +614,19 @@ export function SkillsEditor({
           ))}
         </div>
       </div>
+
+      {/* Font Selector */}
+      <FontSelector
+        value={section.font || 'Inter'}
+        onChange={(font) => onChange({ ...section, font })}
+        label="Section Font"
+      />
+
+      {/* Animation Settings */}
+      <AnimationSettings
+        settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
+        onChange={(animation) => onChange({ ...section, animation })}
+      />
     </div>
   );
 }
@@ -765,6 +791,19 @@ export function ExperienceEditor({
           ))}
         </div>
       </div>
+
+      {/* Font Selector */}
+      <FontSelector
+        value={section.font || 'Inter'}
+        onChange={(font) => onChange({ ...section, font })}
+        label="Section Font"
+      />
+
+      {/* Animation Settings */}
+      <AnimationSettings
+        settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
+        onChange={(animation) => onChange({ ...section, animation })}
+      />
     </div>
   );
 }
@@ -996,6 +1035,19 @@ export function ProjectsEditor({
           ))}
         </div>
       </div>
+
+      {/* Font Selector */}
+      <FontSelector
+        value={section.font || 'Inter'}
+        onChange={(font) => onChange({ ...section, font })}
+        label="Section Font"
+      />
+
+      {/* Animation Settings */}
+      <AnimationSettings
+        settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
+        onChange={(animation) => onChange({ ...section, animation })}
+      />
     </div>
   );
 }
@@ -1128,6 +1180,19 @@ export function TestimonialsEditor({
           ))}
         </div>
       </div>
+
+      {/* Font Selector */}
+      <FontSelector
+        value={section.font || 'Inter'}
+        onChange={(font) => onChange({ ...section, font })}
+        label="Section Font"
+      />
+
+      {/* Animation Settings */}
+      <AnimationSettings
+        settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
+        onChange={(animation) => onChange({ ...section, animation })}
+      />
     </div>
   );
 }
@@ -1227,6 +1292,19 @@ export function ContactEditor({
           Show contact form
         </label>
       </div>
+
+      {/* Font Selector */}
+      <FontSelector
+        value={section.font || 'Inter'}
+        onChange={(font) => onChange({ ...section, font })}
+        label="Section Font"
+      />
+
+      {/* Animation Settings */}
+      <AnimationSettings
+        settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
+        onChange={(animation) => onChange({ ...section, animation })}
+      />
     </div>
   );
 }
