@@ -929,7 +929,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
               <NavbarEditor
                 portfolioData={portfolioData}
                 onUpdate={setPortfolioData}
-                userFullName={profile?.full_name}
+                userFullName={profile?.full_name || undefined}
               />
             ) : selectedSectionIndex !== null && (
               <div className="p-4">

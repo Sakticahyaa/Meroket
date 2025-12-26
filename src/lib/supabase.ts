@@ -159,6 +159,7 @@ export type AboutSection = {
   gradientEnd?: string;
   titleFont?: string;
   descriptionFont?: string;
+  font?: string;
   animation?: AnimationSettings;
 };
 
@@ -179,6 +180,7 @@ export type SkillsSection = {
   gradientStart?: string;
   gradientEnd?: string;
   titleFont?: string;
+  font?: string;
   animation?: AnimationSettings;
 };
 
@@ -201,6 +203,7 @@ export type ExperienceSection = {
   gradientStart?: string;
   gradientEnd?: string;
   titleFont?: string;
+  font?: string;
   animation?: AnimationSettings;
 };
 
@@ -224,6 +227,7 @@ export type ProjectsSection = {
   gradientStart?: string;
   gradientEnd?: string;
   titleFont?: string;
+  font?: string;
   animation?: AnimationSettings;
 };
 
@@ -243,6 +247,7 @@ export type TestimonialsSection = {
   gradientStart?: string;
   gradientEnd?: string;
   titleFont?: string;
+  font?: string;
   animation?: AnimationSettings;
 };
 
@@ -258,6 +263,7 @@ export type ContactSection = {
   gradientStart?: string;
   gradientEnd?: string;
   titleFont?: string;
+  font?: string;
   animation?: AnimationSettings;
 };
 

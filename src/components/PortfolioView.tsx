@@ -259,7 +259,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         // ABOUT SECTION
         if (section.type === 'about') {
           const aboutData = section;
-          const shapeClasses = {
+          const shapeClasses: Record<string, string> = {
             circle: 'rounded-full',
             square: 'rounded-none',
             rounded: 'rounded-2xl',
