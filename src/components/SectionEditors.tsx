@@ -482,6 +482,10 @@ export function SkillsEditor({
   onChange: (section: SkillsSection) => void;
 }) {
   const [editingCard, setEditingCard] = useState<string | null>(null);
+  const [cropperOpen, setCropperOpen] = useState(false);
+  const [tempIconImage, setTempIconImage] = useState<string>('');
+  const [iconCardId, setIconCardId] = useState<string>('');
+  const [isUploadingIcon, setIsUploadingIcon] = useState(false);
 
   const addCard = () => {
     const newCard: SkillCard = {
@@ -503,6 +507,36 @@ export function SkillsEditor({
 
   const deleteCard = (id: string) => {
     onChange({ ...section, cards: section.cards.filter((card) => card.id !== id) });
+  };
+
+  const handleIconSelect = (cardId: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setTempIconImage(reader.result as string);
+        setIconCardId(cardId);
+        setCropperOpen(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleIconCropComplete = async (croppedBlob: Blob) => {
+    setIsUploadingIcon(true);
+    try {
+      const file = new File([croppedBlob], 'skill-icon.jpg', { type: 'image/jpeg' });
+      const url = await uploadImage(file, 'skill-icons');
+      updateCard(iconCardId, { icon: url });
+      setCropperOpen(false);
+      setTempIconImage('');
+      setIconCardId('');
+    } catch (error) {
+      console.error('Error uploading skill icon:', error);
+      alert('Failed to upload icon');
+    } finally {
+      setIsUploadingIcon(false);
+    }
   };
 
   return (
@@ -559,26 +593,21 @@ export function SkillsEditor({
                     className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
                   />
                   <div>
-                    <label className="block text-xs text-gray-600 mb-1">Icon/Image</label>
+                    <label className="block text-xs text-gray-600 mb-1">Icon/Image (1:1 ratio)</label>
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            updateCard(card.id, { icon: reader.result as string });
-                          };
-                          reader.readAsDataURL(file);
-                        }
-                      }}
+                      onChange={(e) => handleIconSelect(card.id, e)}
+                      disabled={isUploadingIcon}
                       className="block w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                     />
                     {card.icon && (
-                      <div className="mt-2 w-12 h-12 rounded border border-gray-300 overflow-hidden">
-                        <img src={card.icon} alt="Icon preview" className="w-full h-full object-cover" />
+                      <div className="mt-2 w-12 h-12 rounded border border-gray-300 overflow-hidden bg-white">
+                        <img src={card.icon} alt="Icon preview" className="w-full h-full object-contain" />
                       </div>
+                    )}
+                    {isUploadingIcon && iconCardId === card.id && (
+                      <p className="text-xs text-gray-500 mt-1">Uploading...</p>
                     )}
                   </div>
                   <button
@@ -627,6 +656,22 @@ export function SkillsEditor({
         settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
         onChange={(animation) => onChange({ ...section, animation })}
       />
+
+      {/* Image Cropper Modal */}
+      {cropperOpen && (
+        <ImageCropperModal
+          isOpen={cropperOpen}
+          imageUrl={tempIconImage}
+          onCropComplete={handleIconCropComplete}
+          onCancel={() => {
+            setCropperOpen(false);
+            setTempIconImage('');
+            setIconCardId('');
+          }}
+          defaultAspect={1}
+          title="Crop Skill Icon (1:1)"
+        />
+      )}
     </div>
   );
 }
