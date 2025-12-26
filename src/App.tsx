@@ -10,6 +10,7 @@ import { AdminLayout } from './components/admin/AdminLayout';
 import { AdminDashboard } from './components/admin/AdminDashboard';
 import { AdminUserList } from './components/admin/AdminUserList';
 import { NewPortfolioData, supabase } from './lib/supabase';
+import { cleanupUnusedImages } from './lib/storageUtils';
 
 // Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -121,6 +122,32 @@ function EditorRoute() {
     }
 
     try {
+      // Cleanup unused images if updating existing portfolio
+      if (data.id) {
+        // Get current portfolio data first
+        const { data: currentPortfolio } = await supabase
+          .from('portfolios_v2')
+          .select('portfolio_data')
+          .eq('id', data.id)
+          .single();
+
+        if (currentPortfolio) {
+          const currentData = typeof currentPortfolio.portfolio_data === 'string'
+            ? JSON.parse(currentPortfolio.portfolio_data)
+            : currentPortfolio.portfolio_data;
+
+          const oldPortfolioData: NewPortfolioData = {
+            ...data,
+            sections: currentData.sections || [],
+            theme: currentData.theme,
+            navbar: currentData.navbar,
+          };
+
+          // Cleanup orphaned images
+          await cleanupUnusedImages(oldPortfolioData, data);
+        }
+      }
+
       // Save to database
       const portfolioToSave = {
         user_id: user.id,
@@ -148,7 +175,7 @@ function EditorRoute() {
 
       if (error) throw error;
 
-      alert(publish ? 'Portfolio published successfully!' : 'Portfolio saved as draft!');
+      alert(publish ? 'Portfolio published successfully!' : 'Portfolio saved successfully!');
     } catch (error: any) {
       console.error('Error saving portfolio:', error);
       alert(`Failed to save portfolio: ${error.message}`);
@@ -245,6 +272,32 @@ function DashboardApp() {
     }
 
     try {
+      // Cleanup unused images if updating existing portfolio
+      if (data.id) {
+        // Get current portfolio data first
+        const { data: currentPortfolio } = await supabase
+          .from('portfolios_v2')
+          .select('portfolio_data')
+          .eq('id', data.id)
+          .single();
+
+        if (currentPortfolio) {
+          const currentData = typeof currentPortfolio.portfolio_data === 'string'
+            ? JSON.parse(currentPortfolio.portfolio_data)
+            : currentPortfolio.portfolio_data;
+
+          const oldPortfolioData: NewPortfolioData = {
+            ...data,
+            sections: currentData.sections || [],
+            theme: currentData.theme,
+            navbar: currentData.navbar,
+          };
+
+          // Cleanup orphaned images
+          await cleanupUnusedImages(oldPortfolioData, data);
+        }
+      }
+
       // Save to database
       const portfolioToSave = {
         user_id: user.id,
@@ -273,7 +326,7 @@ function DashboardApp() {
 
       if (error) throw error;
 
-      alert(publish ? 'Portfolio published successfully!' : 'Portfolio saved as draft!');
+      alert(publish ? 'Portfolio published successfully!' : 'Portfolio saved successfully!');
     } catch (error: any) {
       console.error('Error saving portfolio:', error);
       alert(`Failed to save portfolio: ${error.message}`);

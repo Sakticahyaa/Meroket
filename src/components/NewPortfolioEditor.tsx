@@ -231,13 +231,17 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
             onClick={() => handleSave(false)}
             className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium"
           >
-            Save Draft
+            Save
           </button>
           <button
-            onClick={() => handleSave(true)}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium"
+            onClick={() => handleSave(!portfolioData.is_published)}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              portfolioData.is_published
+                ? 'bg-gray-600 text-white hover:bg-gray-700'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
           >
-            Save & Publish
+            {portfolioData.is_published ? 'Unpublish' : 'Publish'}
           </button>
         </div>
       </div>
