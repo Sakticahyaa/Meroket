@@ -16,6 +16,8 @@ type PortfolioNavbarProps = {
 const defaultConfig: NavbarConfig = {
   showBranding: false,
   brandingText: 'Portfolio',
+  brandingType: 'text',
+  navbarStyle: 'style1',
   opacity: 95, // Default 95%
   backgroundColor: '#FFFFFF', // Default white
   textColor: '#1F2937' // Default dark gray
@@ -54,6 +56,14 @@ export function PortfolioNavbar({ sections, config = defaultConfig }: PortfolioN
         behavior: 'smooth'
       });
     }
+  };
+
+  // Scroll to hero section (top of page)
+  const scrollToHero = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
   };
 
   // Close mobile menu
@@ -172,30 +182,53 @@ export function PortfolioNavbar({ sections, config = defaultConfig }: PortfolioN
           <div className="flex items-center justify-center h-16 relative">
             {/* Left: Branding (conditional) */}
             {navConfig.showBranding && (
-              <div className="absolute left-0 text-xl font-bold" style={{ color: navConfig.textColor }}>
-                {navConfig.brandingText}
-              </div>
+              <button
+                onClick={scrollToHero}
+                className="absolute left-0 flex items-center gap-2 hover:opacity-80 transition-opacity"
+                aria-label="Scroll to top"
+              >
+                {navConfig.brandingType === 'logo' && navConfig.brandingLogo ? (
+                  <img
+                    src={navConfig.brandingLogo}
+                    alt="Logo"
+                    className="h-10 w-auto object-contain"
+                  />
+                ) : (
+                  <span className="text-xl font-bold" style={{ color: navConfig.textColor }}>
+                    {navConfig.brandingText}
+                  </span>
+                )}
+              </button>
             )}
 
             {/* Desktop Navigation - Centered */}
             <div className="hidden md:flex items-center gap-1">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => handleNavClick(item.id)}
-                  className={`px-4 py-2 transition-all ${
-                    activeSection === item.id
-                      ? 'font-bold'
-                      : 'hover:underline'
-                  }`}
-                  style={{
-                    color: navConfig.textColor
-                  }}
-                  aria-current={activeSection === item.id ? 'location' : undefined}
-                >
-                  {item.label}
-                </button>
-              ))}
+              {navItems.map((item) => {
+                const isActive = activeSection === item.id;
+                const isStyle2 = navConfig.navbarStyle === 'style2';
+
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleNavClick(item.id)}
+                    className={`px-4 py-2 transition-all ${
+                      isStyle2
+                        ? isActive
+                          ? 'font-bold bg-gray-200 rounded-lg'
+                          : 'hover:font-bold'
+                        : isActive
+                          ? 'font-bold'
+                          : 'hover:underline'
+                    }`}
+                    style={{
+                      color: navConfig.textColor
+                    }}
+                    aria-current={isActive ? 'location' : undefined}
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
             </div>
 
             {/* Mobile Hamburger Button */}
@@ -237,23 +270,32 @@ export function PortfolioNavbar({ sections, config = defaultConfig }: PortfolioN
               </button>
             </div>
             <div className="flex flex-col p-4 gap-2">
-              {navItems.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => handleNavClick(item.id)}
-                  className={`text-left px-4 py-3 transition-all ${
-                    activeSection === item.id
-                      ? 'font-bold'
-                      : 'hover:underline'
-                  }`}
-                  style={{
-                    color: navConfig.textColor
-                  }}
-                  aria-current={activeSection === item.id ? 'location' : undefined}
-                >
-                  {item.label}
-                </button>
-              ))}
+              {navItems.map((item) => {
+                const isActive = activeSection === item.id;
+                const isStyle2 = navConfig.navbarStyle === 'style2';
+
+                return (
+                  <button
+                    key={item.id}
+                    onClick={() => handleNavClick(item.id)}
+                    className={`text-left px-4 py-3 transition-all ${
+                      isStyle2
+                        ? isActive
+                          ? 'font-bold bg-gray-200 rounded-lg'
+                          : 'hover:font-bold'
+                        : isActive
+                          ? 'font-bold'
+                          : 'hover:underline'
+                    }`}
+                    style={{
+                      color: navConfig.textColor
+                    }}
+                    aria-current={isActive ? 'location' : undefined}
+                  >
+                    {item.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </>
