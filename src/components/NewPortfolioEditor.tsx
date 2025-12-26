@@ -81,9 +81,7 @@ function getAnimationVariants(animation?: { enabled: boolean; type: string; dura
 }
 
 export default function NewPortfolioEditor({ initialData, onSave, onCancel }: NewPortfolioEditorProps) {
-  console.log('[NewPortfolioEditor] Component rendering', { initialData });
   const { profile } = useAuth();
-  console.log('[NewPortfolioEditor] Profile:', profile);
   const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
   const [portfolioData, setPortfolioData] = useState<NewPortfolioData>(
     initialData || {
@@ -114,15 +112,6 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
     userTier
   );
   const isFrozen = portfolioData.is_frozen || freezeCheck.shouldFreeze;
-
-  console.log('[NewPortfolioEditor] Freeze check:', {
-    sectionCount: portfolioData.sections.length,
-    projectCount: totalProjectCards,
-    userTier,
-    freezeCheck,
-    isFrozen,
-    is_frozen_from_db: portfolioData.is_frozen,
-  });
 
   // Helper function to generate gradient CSS
   const getGradientCSS = (start: string, end: string, direction: 'horizontal' | 'vertical' | 'diagonal') => {
@@ -252,11 +241,8 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
 
   // Show frozen notice if portfolio is frozen
   if (isFrozen) {
-    console.log('[NewPortfolioEditor] Portfolio is frozen, showing frozen notice');
     return <FrozenPortfolioNotice userTier={userTier} reason={freezeCheck.reason} />;
   }
-
-  console.log('[NewPortfolioEditor] Rendering editor interface');
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">

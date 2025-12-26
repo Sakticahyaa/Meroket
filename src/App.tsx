@@ -338,10 +338,7 @@ function DashboardApp() {
   };
 
   if (view === 'editor') {
-    console.log('[DashboardApp] Editor view', { loading, portfolioData, editingSlug });
-
     if (loading) {
-      console.log('[DashboardApp] Showing loading spinner');
       return (
         <div className="min-h-screen flex items-center justify-center">
           <div className="text-center">
@@ -352,7 +349,6 @@ function DashboardApp() {
       );
     }
 
-    console.log('[DashboardApp] Rendering NewPortfolioEditor');
     return (
       <NewPortfolioEditor
         initialData={portfolioData}
