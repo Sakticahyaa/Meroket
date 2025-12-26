@@ -245,23 +245,23 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
           );
         }
 
-        // PROJECTS SECTION
-        if (section.type === 'projects') {
-          const projectsData = section;
+        // EXPERIENCE SECTION
+        if (section.type === 'experience') {
+          const experienceData = section;
 
           return (
             <section
-              key={`projects-${index}`}
-              id="section-projects"
+              key={`experience-${index}`}
+              id="section-experience"
               className="py-20 px-4"
-              style={{ backgroundColor: projectsData.backgroundColor || '#FFFFFF' }}
+              style={{ backgroundColor: experienceData.backgroundColor || '#FFFFFF' }}
             >
               <div className="max-w-6xl mx-auto">
                 <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
-                  {projectsData.title}
+                  {experienceData.title}
                 </h2>
                 <div className="grid md:grid-cols-2 gap-8">
-                  {projectsData.cards?.map((card: any) => (
+                  {experienceData.cards?.map((card: any) => (
                     <div
                       key={card.id}
                       className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-xl transition-shadow"
@@ -287,6 +287,82 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                               </span>
                             ))}
                           </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        }
+
+        // PROJECTS SECTION (New Design)
+        if (section.type === 'projects') {
+          const projectsData = section;
+
+          return (
+            <section
+              key={`projects-${index}`}
+              id="section-projects"
+              className="py-20 px-4"
+              style={{ backgroundColor: projectsData.backgroundColor || '#FFFFFF' }}
+            >
+              <div className="max-w-6xl mx-auto">
+                <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
+                  {projectsData.title}
+                </h2>
+                <div className="space-y-8">
+                  {projectsData.items?.map((item: any) => (
+                    <div
+                      key={item.id}
+                      className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-xl transition-shadow"
+                    >
+                      {item.image && (
+                        <div
+                          className="h-80 bg-cover bg-center relative cursor-pointer"
+                          style={{ backgroundImage: `url(${item.image})` }}
+                          onClick={() => setLightboxImage(item.image)}
+                        >
+                          {item.logo && (
+                            <div className="absolute top-4 left-4 bg-white p-2 rounded-lg shadow-md">
+                              <img
+                                src={item.logo}
+                                alt="Company logo"
+                                className="h-12 w-12 object-contain"
+                              />
+                            </div>
+                          )}
+                        </div>
+                      )}
+                      <div className="p-8">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="flex-1">
+                            <h3 className="text-2xl font-bold text-slate-900 mb-2">{item.title}</h3>
+                            <p className="text-slate-600">{item.description}</p>
+                          </div>
+                        </div>
+                        {item.skills && item.skills.length > 0 && (
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            {item.skills.map((skill: string, idx: number) => (
+                              <span
+                                key={idx}
+                                className="px-4 py-2 bg-slate-100 text-slate-700 rounded-full text-sm font-medium uppercase tracking-wide"
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                        {item.learnMoreURL && (
+                          <a
+                            href={item.learnMoreURL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+                          >
+                            Learn More →
+                          </a>
                         )}
                       </div>
                     </div>

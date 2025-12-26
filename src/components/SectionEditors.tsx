@@ -4,11 +4,13 @@ import {
   HeroSection,
   AboutSection,
   SkillsSection,
+  ExperienceSection,
   ProjectsSection,
   TestimonialsSection,
   ContactSection,
   SkillCard,
-  ProjectCard,
+  ExperienceCard,
+  ProjectItem,
   TestimonialCard,
 } from '../lib/supabase';
 
@@ -470,15 +472,15 @@ export function SkillsEditor({
   );
 }
 
-// Projects Section Editor
-export function ProjectsEditor({
+// Experience Section Editor (renamed from Projects)
+export function ExperienceEditor({
   section,
   onChange,
   currentProjectCount = 0,
   maxProjects = 100,
 }: {
-  section: ProjectsSection;
-  onChange: (section: ProjectsSection) => void;
+  section: ExperienceSection;
+  onChange: (section: ExperienceSection) => void;
   currentProjectCount?: number;
   maxProjects?: number;
 }) {
@@ -487,22 +489,22 @@ export function ProjectsEditor({
   const addCard = () => {
     // Check project limit
     if (currentProjectCount >= maxProjects) {
-      alert(`You've reached your project card limit (${maxProjects}). Please upgrade your plan to add more.`);
+      alert(`You've reached your experience card limit (${maxProjects}). Please upgrade your plan to add more.`);
       return;
     }
 
-    const newCard: ProjectCard = {
+    const newCard: ExperienceCard = {
       id: Date.now().toString(),
-      title: 'New Project',
+      title: 'New Experience',
       shortDescription: 'Short description',
-      fullDescription: 'Full description of the project...',
+      fullDescription: 'Full description of the experience...',
       tags: [],
     };
     onChange({ ...section, cards: [...section.cards, newCard] });
     setEditingCard(newCard.id);
   };
 
-  const updateCard = (id: string, updates: Partial<ProjectCard>) => {
+  const updateCard = (id: string, updates: Partial<ExperienceCard>) => {
     onChange({
       ...section,
       cards: section.cards.map((card) => (card.id === id ? { ...card, ...updates } : card)),
@@ -521,7 +523,7 @@ export function ProjectsEditor({
           type="text"
           value={section.title}
           onChange={(e) => onChange({ ...section, title: e.target.value })}
-          placeholder="My Projects / Our Projects"
+          placeholder="My Experience / Work History"
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
         />
       </div>
@@ -538,7 +540,7 @@ export function ProjectsEditor({
 
       <div>
         <div className="flex items-center justify-between mb-2">
-          <label className="block text-sm font-medium text-gray-700">Projects</label>
+          <label className="block text-sm font-medium text-gray-700">Experience Items</label>
           <button
             onClick={addCard}
             className="text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1"
@@ -619,6 +621,237 @@ export function ProjectsEditor({
                     </button>
                     <button
                       onClick={() => deleteCard(card.id)}
+                      className="text-red-600 hover:text-red-700 p-1"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// Projects Section Editor (New - Referred Design)
+export function ProjectsEditor({
+  section,
+  onChange,
+}: {
+  section: ProjectsSection;
+  onChange: (section: ProjectsSection) => void;
+}) {
+  const [editingItem, setEditingItem] = useState<string | null>(null);
+
+  const addItem = () => {
+    const newItem: ProjectItem = {
+      id: Date.now().toString(),
+      title: 'Director of Product Design',
+      description: 'Led the product design team...',
+      skills: ['LEADERSHIP', 'DESIGN STRATEGY'],
+      learnMoreURL: '',
+    };
+    onChange({ ...section, items: [...section.items, newItem] });
+    setEditingItem(newItem.id);
+  };
+
+  const updateItem = (id: string, updates: Partial<ProjectItem>) => {
+    onChange({
+      ...section,
+      items: section.items.map((item) => (item.id === id ? { ...item, ...updates } : item)),
+    });
+  };
+
+  const deleteItem = (id: string) => {
+    onChange({ ...section, items: section.items.filter((item) => item.id !== id) });
+  };
+
+  const updateSkills = (id: string, skillsString: string) => {
+    const skills = skillsString.split(',').map((s) => s.trim().toUpperCase()).filter(Boolean);
+    updateItem(id, { skills });
+  };
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Section Title</label>
+        <input
+          type="text"
+          value={section.title}
+          onChange={(e) => onChange({ ...section, title: e.target.value })}
+          placeholder="Featured Projects"
+          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Background Color</label>
+        <input
+          type="color"
+          value={section.backgroundColor || '#FFFFFF'}
+          onChange={(e) => onChange({ ...section, backgroundColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
+        />
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <label className="block text-sm font-medium text-gray-700">Projects (One per row)</label>
+          <button
+            onClick={addItem}
+            className="text-blue-600 hover:text-blue-700 text-sm flex items-center gap-1"
+          >
+            <Plus className="w-4 h-4" />
+            Add Project
+          </button>
+        </div>
+
+        <div className="space-y-3">
+          {section.items.map((item) => (
+            <div key={item.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+              {editingItem === item.id ? (
+                <div className="space-y-3">
+                  {/* Main Image */}
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Main Image</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            updateItem(item.id, { image: reader.result as string });
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                      className="block w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    />
+                    {item.image && (
+                      <div className="mt-2 w-full h-32 rounded border border-gray-300 overflow-hidden">
+                        <img src={item.image} alt="Project preview" className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Logo */}
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Company Logo (Optional)</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            updateItem(item.id, { logo: reader.result as string });
+                          };
+                          reader.readAsDataURL(file);
+                        }
+                      }}
+                      className="block w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    />
+                    {item.logo && (
+                      <div className="mt-2 w-16 h-16 rounded border border-gray-300 overflow-hidden bg-white p-2">
+                        <img src={item.logo} alt="Logo preview" className="w-full h-full object-contain" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Title */}
+                  <input
+                    type="text"
+                    value={item.title}
+                    onChange={(e) => updateItem(item.id, { title: e.target.value })}
+                    placeholder="Role/Position Title"
+                    className="w-full px-2 py-1.5 border border-gray-300 rounded text-sm font-medium"
+                  />
+
+                  {/* Description */}
+                  <textarea
+                    value={item.description}
+                    onChange={(e) => updateItem(item.id, { description: e.target.value })}
+                    placeholder="Description of work..."
+                    rows={4}
+                    className="w-full px-2 py-1.5 border border-gray-300 rounded text-sm"
+                  />
+
+                  {/* Skills */}
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">
+                      Skills (comma-separated, will be UPPERCASE)
+                    </label>
+                    <input
+                      type="text"
+                      value={item.skills.join(', ')}
+                      onChange={(e) => updateSkills(item.id, e.target.value)}
+                      placeholder="LEADERSHIP, DESIGN STRATEGY, UX"
+                      className="w-full px-2 py-1.5 border border-gray-300 rounded text-xs"
+                    />
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {item.skills.map((skill, idx) => (
+                        <span
+                          key={idx}
+                          className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Learn More URL */}
+                  <input
+                    type="url"
+                    value={item.learnMoreURL || ''}
+                    onChange={(e) => updateItem(item.id, { learnMoreURL: e.target.value })}
+                    placeholder="https://example.com (optional)"
+                    className="w-full px-2 py-1.5 border border-gray-300 rounded text-xs"
+                  />
+
+                  <button
+                    onClick={() => setEditingItem(null)}
+                    className="text-sm text-blue-600 hover:text-blue-700"
+                  >
+                    Done
+                  </button>
+                </div>
+              ) : (
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-1">
+                      {item.logo && (
+                        <img src={item.logo} alt="Logo" className="w-8 h-8 object-contain" />
+                      )}
+                      <p className="font-semibold text-sm">{item.title}</p>
+                    </div>
+                    <p className="text-xs text-gray-600 mb-2">{item.description.substring(0, 100)}...</p>
+                    <div className="flex flex-wrap gap-1">
+                      {item.skills.slice(0, 3).map((skill, idx) => (
+                        <span key={idx} className="px-2 py-0.5 bg-gray-200 text-gray-700 rounded-full text-xs">
+                          {skill}
+                        </span>
+                      ))}
+                      {item.skills.length > 3 && (
+                        <span className="px-2 py-0.5 text-gray-500 text-xs">+{item.skills.length - 3}</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 ml-2">
+                    <button
+                      onClick={() => setEditingItem(item.id)}
+                      className="text-blue-600 hover:text-blue-700 text-xs px-2 py-1"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => deleteItem(item.id)}
                       className="text-red-600 hover:text-red-700 p-1"
                     >
                       <X className="w-3 h-3" />

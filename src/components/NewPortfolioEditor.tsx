@@ -10,6 +10,7 @@ import {
   HeroEditor,
   AboutEditor,
   SkillsEditor,
+  ExperienceEditor,
   ProjectsEditor,
   TestimonialsEditor,
   ContactEditor,
@@ -105,11 +106,18 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
           cards: [],
         };
         break;
+      case 'experience':
+        newSection = {
+          type: 'experience',
+          title: 'My Experience',
+          cards: [],
+        };
+        break;
       case 'projects':
         newSection = {
           type: 'projects',
           title: 'My Projects',
-          cards: [],
+          items: [],
         };
         break;
       case 'testimonials':
@@ -321,7 +329,8 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                         {section.type === 'hero' && section.title}
                         {section.type === 'about' && section.title}
                         {section.type === 'skills' && `${section.cards.length} items`}
-                        {section.type === 'projects' && `${section.cards.length} projects`}
+                        {section.type === 'experience' && `${section.cards.length} items`}
+                        {section.type === 'projects' && `${section.items.length} projects`}
                         {section.type === 'testimonials' && `${section.cards.length} testimonials`}
                         {section.type === 'contact' && section.title}
                       </p>
@@ -403,11 +412,18 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                   <p className="text-xs text-gray-500">Showcase your expertise</p>
                 </button>
                 <button
+                  onClick={() => addSection('experience')}
+                  className="w-full text-left px-3 py-2 hover:bg-white rounded transition-colors text-sm"
+                >
+                  <span className="font-medium">Experience</span>
+                  <p className="text-xs text-gray-500">Work history & portfolio</p>
+                </button>
+                <button
                   onClick={() => addSection('projects')}
                   className="w-full text-left px-3 py-2 hover:bg-white rounded transition-colors text-sm"
                 >
                   <span className="font-medium">Projects</span>
-                  <p className="text-xs text-gray-500">Display your work</p>
+                  <p className="text-xs text-gray-500">Featured work with details</p>
                 </button>
                 <button
                   onClick={() => addSection('testimonials')}
@@ -580,12 +596,12 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                   );
                 }
 
-                // PROJECTS SECTION
-                if (section.type === 'projects') {
+                // EXPERIENCE SECTION
+                if (section.type === 'experience') {
                   return (
                     <section
-                      key={`projects-${index}`}
-                      id="section-projects"
+                      key={`experience-${index}`}
+                      id="section-experience"
                       className="py-20 px-4"
                       style={{ backgroundColor: section.backgroundColor || '#FFFFFF' }}
                     >
@@ -619,6 +635,79 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                                       </span>
                                     ))}
                                   </div>
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </section>
+                  );
+                }
+
+                // PROJECTS SECTION (New Design)
+                if (section.type === 'projects') {
+                  return (
+                    <section
+                      key={`projects-${index}`}
+                      id="section-projects"
+                      className="py-20 px-4"
+                      style={{ backgroundColor: section.backgroundColor || '#FFFFFF' }}
+                    >
+                      <div className="max-w-6xl mx-auto">
+                        <h2 className="text-4xl font-bold text-center mb-12 text-slate-900">
+                          {section.title}
+                        </h2>
+                        <div className="space-y-8">
+                          {section.items?.map((item: any) => (
+                            <div
+                              key={item.id}
+                              className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-xl transition-shadow"
+                            >
+                              {item.image && (
+                                <div
+                                  className="h-80 bg-cover bg-center relative"
+                                  style={{ backgroundImage: `url(${item.image})` }}
+                                >
+                                  {item.logo && (
+                                    <div className="absolute top-4 left-4 bg-white p-2 rounded-lg shadow-md">
+                                      <img
+                                        src={item.logo}
+                                        alt="Company logo"
+                                        className="h-12 w-12 object-contain"
+                                      />
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                              <div className="p-8">
+                                <div className="flex items-start justify-between mb-4">
+                                  <div className="flex-1">
+                                    <h3 className="text-2xl font-bold text-slate-900 mb-2">{item.title}</h3>
+                                    <p className="text-slate-600">{item.description}</p>
+                                  </div>
+                                </div>
+                                {item.skills && item.skills.length > 0 && (
+                                  <div className="flex flex-wrap gap-2 mb-4">
+                                    {item.skills.map((skill: string, idx: number) => (
+                                      <span
+                                        key={idx}
+                                        className="px-4 py-2 bg-slate-100 text-slate-700 rounded-full text-sm font-medium uppercase tracking-wide"
+                                      >
+                                        {skill}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                                {item.learnMoreURL && (
+                                  <a
+                                    href={item.learnMoreURL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+                                  >
+                                    Learn More →
+                                  </a>
                                 )}
                               </div>
                             </div>
@@ -716,12 +805,18 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                   onChange={(updated) => updateSection(selectedSectionIndex, updated)}
                 />
               )}
-              {portfolioData.sections[selectedSectionIndex].type === 'projects' && (
-                <ProjectsEditor
+              {portfolioData.sections[selectedSectionIndex].type === 'experience' && (
+                <ExperienceEditor
                   section={portfolioData.sections[selectedSectionIndex] as any}
                   onChange={(updated) => updateSection(selectedSectionIndex, updated)}
                   currentProjectCount={totalProjectCards}
                   maxProjects={tierLimits.projects}
+                />
+              )}
+              {portfolioData.sections[selectedSectionIndex].type === 'projects' && (
+                <ProjectsEditor
+                  section={portfolioData.sections[selectedSectionIndex] as any}
+                  onChange={(updated) => updateSection(selectedSectionIndex, updated)}
                 />
               )}
               {portfolioData.sections[selectedSectionIndex].type === 'testimonials' && (

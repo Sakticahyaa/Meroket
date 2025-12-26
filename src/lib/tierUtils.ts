@@ -77,12 +77,18 @@ export function canAddProjectCard(currentProjectCount: number, userTier: UserTie
 }
 
 /**
- * Count total project cards across all project sections
+ * Count total project cards across all experience and project sections
  */
 export function countTotalProjectCards(sections: any[]): number {
-  return sections
-    .filter((section) => section.type === 'projects')
+  const experienceCards = sections
+    .filter((section) => section.type === 'experience')
     .reduce((total, section) => total + (section.cards?.length || 0), 0);
+
+  const projectItems = sections
+    .filter((section) => section.type === 'projects')
+    .reduce((total, section) => total + (section.items?.length || 0), 0);
+
+  return experienceCards + projectItems;
 }
 
 /**
