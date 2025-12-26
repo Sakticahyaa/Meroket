@@ -98,8 +98,33 @@ export type PreviewData = {
   }>;
 };
 
+// Animation settings for sections
+export type AnimationType = 'none' | 'fade' | 'slideUp' | 'slideDown' | 'slideLeft' | 'slideRight';
+
+export type AnimationSettings = {
+  enabled: boolean;
+  type: AnimationType;
+  duration: number; // in milliseconds
+  delay: number; // in milliseconds
+};
+
+// Text formatting and styling
+export type TextStyle = {
+  fontFamily?: string;
+  bold?: boolean;
+  italic?: boolean;
+  underline?: boolean;
+  color?: string;
+};
+
+// Rich text content with inline formatting
+export type RichTextContent = {
+  text: string;
+  styles?: TextStyle;
+};
+
 // New Section-based types
-export type SectionType = 'hero' | 'about' | 'skills' | 'projects' | 'testimonials' | 'contact';
+export type SectionType = 'hero' | 'about' | 'skills' | 'experience' | 'projects' | 'testimonials' | 'contact';
 
 export type HeroSection = {
   type: 'hero';
@@ -108,11 +133,16 @@ export type HeroSection = {
   gradientStart?: string;
   gradientEnd?: string;
   gradientDirection?: 'horizontal' | 'vertical' | 'diagonal';
+  gradientType?: 'linear' | 'radial';
   backgroundImage?: string;
+  profileImage?: string;
   title: string;
   subtitle: string;
   titleColor: string;
   subtitleColor: string;
+  titleFont?: string;
+  subtitleFont?: string;
+  animation?: AnimationSettings;
 };
 
 export type AboutSection = {
@@ -124,6 +154,12 @@ export type AboutSection = {
   imageBorder: boolean;
   borderColor?: string;
   backgroundColor?: string;
+  gradientType?: 'linear' | 'radial';
+  gradientStart?: string;
+  gradientEnd?: string;
+  titleFont?: string;
+  descriptionFont?: string;
+  animation?: AnimationSettings;
 };
 
 export type SkillCard = {
@@ -139,9 +175,15 @@ export type SkillsSection = {
   title: string;
   cards: SkillCard[];
   backgroundColor?: string;
+  gradientType?: 'linear' | 'radial';
+  gradientStart?: string;
+  gradientEnd?: string;
+  titleFont?: string;
+  animation?: AnimationSettings;
 };
 
-export type ProjectCard = {
+// Experience Section (renamed from Projects)
+export type ExperienceCard = {
   id: string;
   title: string;
   shortDescription: string;
@@ -150,11 +192,39 @@ export type ProjectCard = {
   tags?: string[];
 };
 
+export type ExperienceSection = {
+  type: 'experience';
+  title: string;
+  cards: ExperienceCard[];
+  backgroundColor?: string;
+  gradientType?: 'linear' | 'radial';
+  gradientStart?: string;
+  gradientEnd?: string;
+  titleFont?: string;
+  animation?: AnimationSettings;
+};
+
+// New Projects Section (referred design - one per row)
+export type ProjectItem = {
+  id: string;
+  image?: string;
+  logo?: string;
+  title: string;
+  description: string;
+  skills: string[];
+  learnMoreURL?: string;
+};
+
 export type ProjectsSection = {
   type: 'projects';
   title: string;
-  cards: ProjectCard[];
+  items: ProjectItem[];
   backgroundColor?: string;
+  gradientType?: 'linear' | 'radial';
+  gradientStart?: string;
+  gradientEnd?: string;
+  titleFont?: string;
+  animation?: AnimationSettings;
 };
 
 export type TestimonialCard = {
@@ -169,6 +239,11 @@ export type TestimonialsSection = {
   title: string;
   cards: TestimonialCard[];
   backgroundColor?: string;
+  gradientType?: 'linear' | 'radial';
+  gradientStart?: string;
+  gradientEnd?: string;
+  titleFont?: string;
+  animation?: AnimationSettings;
 };
 
 export type ContactSection = {
@@ -179,12 +254,18 @@ export type ContactSection = {
   whatsappNumber?: string;
   showForm: boolean;
   backgroundColor?: string;
+  gradientType?: 'linear' | 'radial';
+  gradientStart?: string;
+  gradientEnd?: string;
+  titleFont?: string;
+  animation?: AnimationSettings;
 };
 
 export type PortfolioSection =
   | HeroSection
   | AboutSection
   | SkillsSection
+  | ExperienceSection
   | ProjectsSection
   | TestimonialsSection
   | ContactSection;
@@ -193,7 +274,15 @@ export type PortfolioSection =
 export type StoredSection = {
   id: string;
   type: SectionType;
-  data: HeroSection | AboutSection | SkillsSection | ProjectsSection | TestimonialsSection | ContactSection;
+  data: HeroSection | AboutSection | SkillsSection | ExperienceSection | ProjectsSection | TestimonialsSection | ContactSection;
+};
+
+// Image tracking for deletion management
+export type TrackedImage = {
+  url: string;
+  section: SectionType;
+  field: string;
+  timestamp: number;
 };
 
 export type NewPortfolioData = {
@@ -217,7 +306,10 @@ export type NewPortfolioData = {
 // Navbar configuration type
 export type NavbarConfig = {
   showBranding: boolean;
+  brandingType: 'text' | 'logo';
   brandingText?: string;
+  brandingLogo?: string;
+  navbarStyle: 'style1' | 'style2';
   opacity: number; // 0-100
   backgroundColor: string; // Hex color for navbar background
   textColor: string; // Hex color for navbar text
