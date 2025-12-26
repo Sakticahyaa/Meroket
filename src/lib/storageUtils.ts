@@ -131,7 +131,7 @@ export function trackImageURLs(portfolioData: NewPortfolioData): TrackedImage[] 
         break;
 
       case 'skills':
-        section.cards.forEach((card, index) => {
+        section.cards?.forEach((card, index) => {
           if (card.icon) {
             tracked.push({
               url: card.icon,
@@ -144,7 +144,7 @@ export function trackImageURLs(portfolioData: NewPortfolioData): TrackedImage[] 
         break;
 
       case 'experience':
-        section.cards.forEach((card, index) => {
+        section.cards?.forEach((card, index) => {
           if (card.image) {
             tracked.push({
               url: card.image,
@@ -157,7 +157,7 @@ export function trackImageURLs(portfolioData: NewPortfolioData): TrackedImage[] 
         break;
 
       case 'projects':
-        section.items.forEach((item, index) => {
+        section.items?.forEach((item, index) => {
           if (item.image) {
             tracked.push({
               url: item.image,
