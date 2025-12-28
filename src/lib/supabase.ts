@@ -141,8 +141,11 @@ export type HeroSection = {
 export type AboutSection = {
   type: 'about';
   title: string;
+  titleColor?: string;
   description: string;
+  descriptionColor?: string;
   image?: string;
+  imageSize?: 'small' | 'medium' | 'large';
   imageShape: 'circle' | 'square' | 'rounded' | 'hexagon' | 'triangle';
   imageBorder: boolean;
   borderColor?: string;
@@ -165,12 +168,17 @@ export type SkillCard = {
   description: string;
   icon?: string;
   iconType: 'image' | 'lucide';
+  backgroundColor?: string;
+  backgroundStyle?: 'solid' | 'blur';
 };
 
 export type SkillsSection = {
   type: 'skills';
   title: string;
+  titleColor?: string;
   cards: SkillCard[];
+  cardTitleColor?: string;
+  cardDescriptionColor?: string;
   backgroundType: 'color' | 'gradient' | 'image';
   backgroundColor?: string;
   gradientType?: 'linear' | 'radial';
@@ -196,7 +204,10 @@ export type ExperienceCard = {
 export type ExperienceSection = {
   type: 'experience';
   title: string;
+  titleColor?: string;
   cards: ExperienceCard[];
+  cardTitleColor?: string;
+  cardDescriptionColor?: string;
   backgroundType: 'color' | 'gradient' | 'image';
   backgroundColor?: string;
   gradientType?: 'linear' | 'radial';
@@ -218,12 +229,17 @@ export type ProjectItem = {
   description: string;
   skills: string[];
   learnMoreURL?: string;
+  backgroundColor?: string;
+  backgroundStyle?: 'solid' | 'blur';
 };
 
 export type ProjectsSection = {
   type: 'projects';
   title: string;
+  titleColor?: string;
   items: ProjectItem[];
+  itemTitleColor?: string;
+  itemDescriptionColor?: string;
   backgroundType: 'color' | 'gradient' | 'image';
   backgroundColor?: string;
   gradientType?: 'linear' | 'radial';
@@ -246,7 +262,10 @@ export type TestimonialCard = {
 export type TestimonialsSection = {
   type: 'testimonials';
   title: string;
+  titleColor?: string;
   cards: TestimonialCard[];
+  cardTextColor?: string;
+  cardAuthorColor?: string;
   backgroundType: 'color' | 'gradient' | 'image';
   backgroundColor?: string;
   gradientType?: 'linear' | 'radial';
@@ -262,6 +281,8 @@ export type TestimonialsSection = {
 export type ContactSection = {
   type: 'contact';
   title: string;
+  titleColor?: string;
+  descriptionColor?: string;
   method: 'email' | 'whatsapp';
   email?: string;
   whatsappNumber?: string;
