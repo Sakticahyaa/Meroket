@@ -559,34 +559,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
               portfolioData.sections.map((section: any, index) => {
                 // HERO SECTION
                 if (section.type === 'hero') {
-                  let bgStyle: any = {};
-                  if (section.backgroundType === 'color') {
-                    bgStyle = { backgroundColor: section.backgroundColor || '#FFFFFF' };
-                  } else if (section.backgroundType === 'gradient') {
-                    const isRadial = section.gradientType === 'radial';
-                    if (isRadial) {
-                      bgStyle = {
-                        background: `radial-gradient(circle, ${section.gradientStart || '#667eea'}, ${section.gradientEnd || '#764ba2'})`,
-                      };
-                    } else {
-                      const direction =
-                        section.gradientDirection === 'horizontal'
-                          ? 'to right'
-                          : section.gradientDirection === 'vertical'
-                          ? 'to bottom'
-                          : 'to bottom right';
-                      bgStyle = {
-                        background: `linear-gradient(${direction}, ${section.gradientStart || '#667eea'}, ${section.gradientEnd || '#764ba2'})`,
-                      };
-                    }
-                  } else if (section.backgroundType === 'image' && section.backgroundImage) {
-                    bgStyle = {
-                      backgroundImage: `url(${section.backgroundImage})`,
-                      backgroundSize: 'cover',
-                      backgroundPosition: 'center',
-                    };
-                  }
-
+                  const bgStyle = getBackgroundStyle(section);
                   const heroVariants = getAnimationVariants(section.animation);
                   const hasAnimation = section.animation?.enabled;
 
@@ -648,6 +621,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                     triangle: 'clip-triangle',
                   };
 
+                  const bgStyle = getBackgroundStyle(section);
                   const aboutVariants = getAnimationVariants(section.animation);
                   const hasAnimation = section.animation?.enabled;
 
@@ -655,11 +629,14 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                     <section
                       key={`about-${index}`}
                       id="section-about"
-                      className="py-20 px-4"
-                      style={{ backgroundColor: section.backgroundColor || '#FFFFFF' }}
+                      className="relative py-20 px-4"
+                      style={bgStyle}
                     >
+                      {section.backgroundType === 'image' && (
+                        <div className="absolute inset-0 bg-black/20"></div>
+                      )}
                       <motion.div
-                        className="max-w-6xl mx-auto"
+                        className="max-w-6xl mx-auto relative z-10"
                         initial={hasAnimation ? "hidden" : false}
                         whileInView={hasAnimation ? "visible" : undefined}
                         viewport={{ once: true, margin: "-100px" }}
@@ -696,6 +673,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
 
                 // SKILLS SECTION
                 if (section.type === 'skills') {
+                  const bgStyle = getBackgroundStyle(section);
                   const skillsVariants = getAnimationVariants(section.animation);
                   const hasAnimation = section.animation?.enabled;
 
@@ -703,11 +681,14 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                     <section
                       key={`skills-${index}`}
                       id="section-skills"
-                      className="py-20 px-4"
-                      style={{ backgroundColor: section.backgroundColor || '#F8FAFC' }}
+                      className="relative py-20 px-4"
+                      style={bgStyle}
                     >
+                      {section.backgroundType === 'image' && (
+                        <div className="absolute inset-0 bg-black/20"></div>
+                      )}
                       <motion.div
-                        className="max-w-6xl mx-auto"
+                        className="max-w-6xl mx-auto relative z-10"
                         initial={hasAnimation ? "hidden" : false}
                         whileInView={hasAnimation ? "visible" : undefined}
                         viewport={{ once: true, margin: "-100px" }}
@@ -739,6 +720,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
 
                 // EXPERIENCE SECTION
                 if (section.type === 'experience') {
+                  const bgStyle = getBackgroundStyle(section);
                   const experienceVariants = getAnimationVariants(section.animation);
                   const hasAnimation = section.animation?.enabled;
 
@@ -746,11 +728,14 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                     <section
                       key={`experience-${index}`}
                       id="section-experience"
-                      className="py-20 px-4"
-                      style={{ backgroundColor: section.backgroundColor || '#FFFFFF' }}
+                      className="relative py-20 px-4"
+                      style={bgStyle}
                     >
+                      {section.backgroundType === 'image' && (
+                        <div className="absolute inset-0 bg-black/20"></div>
+                      )}
                       <motion.div
-                        className="max-w-6xl mx-auto"
+                        className="max-w-6xl mx-auto relative z-10"
                         initial={hasAnimation ? "hidden" : false}
                         whileInView={hasAnimation ? "visible" : undefined}
                         viewport={{ once: true, margin: "-100px" }}
@@ -797,6 +782,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
 
                 // PROJECTS SECTION (New Design)
                 if (section.type === 'projects') {
+                  const bgStyle = getBackgroundStyle(section);
                   const projectsVariants = getAnimationVariants(section.animation);
                   const hasAnimation = section.animation?.enabled;
 
@@ -804,11 +790,14 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                     <section
                       key={`projects-${index}`}
                       id="section-projects"
-                      className="py-20 px-4"
-                      style={{ backgroundColor: section.backgroundColor || '#FFFFFF' }}
+                      className="relative py-20 px-4"
+                      style={bgStyle}
                     >
+                      {section.backgroundType === 'image' && (
+                        <div className="absolute inset-0 bg-black/20"></div>
+                      )}
                       <motion.div
-                        className="max-w-6xl mx-auto"
+                        className="max-w-6xl mx-auto relative z-10"
                         initial={hasAnimation ? "hidden" : false}
                         whileInView={hasAnimation ? "visible" : undefined}
                         viewport={{ once: true, margin: "-100px" }}
@@ -879,6 +868,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
 
                 // TESTIMONIALS SECTION
                 if (section.type === 'testimonials') {
+                  const bgStyle = getBackgroundStyle(section);
                   const testimonialsVariants = getAnimationVariants(section.animation);
                   const hasAnimation = section.animation?.enabled;
 
@@ -886,11 +876,14 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                     <section
                       key={`testimonials-${index}`}
                       id="section-testimonials"
-                      className="py-20 px-4"
-                      style={{ backgroundColor: section.backgroundColor || '#F8FAFC' }}
+                      className="relative py-20 px-4"
+                      style={bgStyle}
                     >
+                      {section.backgroundType === 'image' && (
+                        <div className="absolute inset-0 bg-black/20"></div>
+                      )}
                       <motion.div
-                        className="max-w-6xl mx-auto"
+                        className="max-w-6xl mx-auto relative z-10"
                         initial={hasAnimation ? "hidden" : false}
                         whileInView={hasAnimation ? "visible" : undefined}
                         viewport={{ once: true, margin: "-100px" }}
@@ -918,6 +911,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
 
                 // CONTACT SECTION
                 if (section.type === 'contact') {
+                  const bgStyle = getBackgroundStyle(section);
                   const contactVariants = getAnimationVariants(section.animation);
                   const hasAnimation = section.animation?.enabled;
 
@@ -925,11 +919,14 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                     <section
                       key={`contact-${index}`}
                       id="section-contact"
-                      className="py-20 px-4"
-                      style={{ backgroundColor: section.backgroundColor || '#FFFFFF' }}
+                      className="relative py-20 px-4"
+                      style={bgStyle}
                     >
+                      {section.backgroundType === 'image' && (
+                        <div className="absolute inset-0 bg-black/20"></div>
+                      )}
                       <motion.div
-                        className="max-w-4xl mx-auto text-center"
+                        className="max-w-4xl mx-auto text-center relative z-10"
                         initial={hasAnimation ? "hidden" : false}
                         whileInView={hasAnimation ? "visible" : undefined}
                         viewport={{ once: true, margin: "-100px" }}

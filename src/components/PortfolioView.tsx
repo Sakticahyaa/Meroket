@@ -66,6 +66,40 @@ function getAnimationVariants(animation?: { enabled: boolean; type: string; dura
   return variants;
 }
 
+// Helper function to generate background styles
+function getBackgroundStyle(section: any) {
+  let bgStyle: any = {};
+
+  if (section.backgroundType === 'color') {
+    bgStyle = { backgroundColor: section.backgroundColor || '#FFFFFF' };
+  } else if (section.backgroundType === 'gradient') {
+    const isRadial = section.gradientType === 'radial';
+    if (isRadial) {
+      bgStyle = {
+        background: `radial-gradient(circle, ${section.gradientStart || '#667eea'}, ${section.gradientEnd || '#764ba2'})`,
+      };
+    } else {
+      const direction =
+        section.gradientDirection === 'horizontal'
+          ? 'to right'
+          : section.gradientDirection === 'vertical'
+          ? 'to bottom'
+          : 'to bottom right';
+      bgStyle = {
+        background: `linear-gradient(${direction}, ${section.gradientStart || '#667eea'}, ${section.gradientEnd || '#764ba2'})`,
+      };
+    }
+  } else if (section.backgroundType === 'image' && section.backgroundImage) {
+    bgStyle = {
+      backgroundImage: `url(${section.backgroundImage})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    };
+  }
+
+  return bgStyle;
+}
+
 export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
   const [loading, setLoading] = useState(true);
   const [portfolio, setPortfolio] = useState<PortfolioV2 | null>(null);
@@ -170,35 +204,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         // HERO SECTION
         if (section.type === 'hero') {
           const heroData = section;
-          let bgStyle: any = {};
-
-          if (heroData.backgroundType === 'color') {
-            bgStyle = { backgroundColor: heroData.backgroundColor || '#FFFFFF' };
-          } else if (heroData.backgroundType === 'gradient') {
-            const isRadial = heroData.gradientType === 'radial';
-            if (isRadial) {
-              bgStyle = {
-                background: `radial-gradient(circle, ${heroData.gradientStart || '#667eea'}, ${heroData.gradientEnd || '#764ba2'})`,
-              };
-            } else {
-              const direction =
-                heroData.gradientDirection === 'horizontal'
-                  ? 'to right'
-                  : heroData.gradientDirection === 'vertical'
-                  ? 'to bottom'
-                  : 'to bottom right';
-              bgStyle = {
-                background: `linear-gradient(${direction}, ${heroData.gradientStart || '#667eea'}, ${heroData.gradientEnd || '#764ba2'})`,
-              };
-            }
-          } else if (heroData.backgroundType === 'image' && heroData.backgroundImage) {
-            bgStyle = {
-              backgroundImage: `url(${heroData.backgroundImage})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            };
-          }
-
+          const bgStyle = getBackgroundStyle(heroData);
           const heroVariants = getAnimationVariants(heroData.animation);
           const hasAnimation = heroData.animation?.enabled;
 
@@ -261,6 +267,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
             triangle: 'clip-triangle',
           };
 
+          const bgStyle = getBackgroundStyle(aboutData);
           const aboutVariants = getAnimationVariants(aboutData.animation);
           const hasAnimation = aboutData.animation?.enabled;
 
@@ -268,11 +275,14 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
             <section
               key={`about-${index}`}
               id="section-about"
-              className="py-20 px-4"
-              style={{ backgroundColor: aboutData.backgroundColor || '#FFFFFF' }}
+              className="relative py-20 px-4"
+              style={bgStyle}
             >
+              {aboutData.backgroundType === 'image' && (
+                <div className="absolute inset-0 bg-black/20"></div>
+              )}
               <motion.div
-                className="max-w-6xl mx-auto"
+                className="max-w-6xl mx-auto relative z-10"
                 initial={hasAnimation ? "hidden" : false}
                 whileInView={hasAnimation ? "visible" : undefined}
                 viewport={{ once: true, margin: "-100px" }}
@@ -311,6 +321,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         if (section.type === 'skills') {
           const skillsData = section;
 
+          const bgStyle = getBackgroundStyle(skillsData);
           const skillsVariants = getAnimationVariants(skillsData.animation);
           const hasAnimation = skillsData.animation?.enabled;
 
@@ -318,11 +329,14 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
             <section
               key={`skills-${index}`}
               id="section-skills"
-              className="py-20 px-4"
-              style={{ backgroundColor: skillsData.backgroundColor || '#F8FAFC' }}
+              className="relative py-20 px-4"
+              style={bgStyle}
             >
+              {skillsData.backgroundType === 'image' && (
+                <div className="absolute inset-0 bg-black/20"></div>
+              )}
               <motion.div
-                className="max-w-6xl mx-auto"
+                className="max-w-6xl mx-auto relative z-10"
                 initial={hasAnimation ? "hidden" : false}
                 whileInView={hasAnimation ? "visible" : undefined}
                 viewport={{ once: true, margin: "-100px" }}
@@ -356,6 +370,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         if (section.type === 'experience') {
           const experienceData = section;
 
+          const bgStyle = getBackgroundStyle(experienceData);
           const experienceVariants = getAnimationVariants(experienceData.animation);
           const hasAnimation = experienceData.animation?.enabled;
 
@@ -363,11 +378,14 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
             <section
               key={`experience-${index}`}
               id="section-experience"
-              className="py-20 px-4"
-              style={{ backgroundColor: experienceData.backgroundColor || '#FFFFFF' }}
+              className="relative py-20 px-4"
+              style={bgStyle}
             >
+              {experienceData.backgroundType === 'image' && (
+                <div className="absolute inset-0 bg-black/20"></div>
+              )}
               <motion.div
-                className="max-w-6xl mx-auto"
+                className="max-w-6xl mx-auto relative z-10"
                 initial={hasAnimation ? "hidden" : false}
                 whileInView={hasAnimation ? "visible" : undefined}
                 viewport={{ once: true, margin: "-100px" }}
@@ -417,6 +435,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         if (section.type === 'projects') {
           const projectsData = section;
 
+          const bgStyle = getBackgroundStyle(projectsData);
           const projectsVariants = getAnimationVariants(projectsData.animation);
           const hasAnimation = projectsData.animation?.enabled;
 
@@ -424,11 +443,14 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
             <section
               key={`projects-${index}`}
               id="section-projects"
-              className="py-20 px-4"
-              style={{ backgroundColor: projectsData.backgroundColor || '#FFFFFF' }}
+              className="relative py-20 px-4"
+              style={bgStyle}
             >
+              {projectsData.backgroundType === 'image' && (
+                <div className="absolute inset-0 bg-black/20"></div>
+              )}
               <motion.div
-                className="max-w-6xl mx-auto"
+                className="max-w-6xl mx-auto relative z-10"
                 initial={hasAnimation ? "hidden" : false}
                 whileInView={hasAnimation ? "visible" : undefined}
                 viewport={{ once: true, margin: "-100px" }}
@@ -502,6 +524,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         if (section.type === 'testimonials') {
           const testimonialsData = section;
 
+          const bgStyle = getBackgroundStyle(testimonialsData);
           const testimonialsVariants = getAnimationVariants(testimonialsData.animation);
           const hasAnimation = testimonialsData.animation?.enabled;
 
@@ -509,11 +532,14 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
             <section
               key={`testimonials-${index}`}
               id="section-testimonials"
-              className="py-20 px-4"
-              style={{ backgroundColor: testimonialsData.backgroundColor || '#F8FAFC' }}
+              className="relative py-20 px-4"
+              style={bgStyle}
             >
+              {testimonialsData.backgroundType === 'image' && (
+                <div className="absolute inset-0 bg-black/20"></div>
+              )}
               <motion.div
-                className="max-w-6xl mx-auto"
+                className="max-w-6xl mx-auto relative z-10"
                 initial={hasAnimation ? "hidden" : false}
                 whileInView={hasAnimation ? "visible" : undefined}
                 viewport={{ once: true, margin: "-100px" }}
@@ -543,6 +569,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
         if (section.type === 'contact') {
           const contactData = section;
 
+          const bgStyle = getBackgroundStyle(contactData);
           const contactVariants = getAnimationVariants(contactData.animation);
           const hasAnimation = contactData.animation?.enabled;
 
@@ -550,11 +577,14 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
             <section
               key={`contact-${index}`}
               id="section-contact"
-              className="py-20 px-4"
-              style={{ backgroundColor: contactData.backgroundColor || '#FFFFFF' }}
+              className="relative py-20 px-4"
+              style={bgStyle}
             >
+              {contactData.backgroundType === 'image' && (
+                <div className="absolute inset-0 bg-black/20"></div>
+              )}
               <motion.div
-                className="max-w-4xl mx-auto text-center"
+                className="max-w-4xl mx-auto text-center relative z-10"
                 initial={hasAnimation ? "hidden" : false}
                 whileInView={hasAnimation ? "visible" : undefined}
                 viewport={{ once: true, margin: "-100px" }}
