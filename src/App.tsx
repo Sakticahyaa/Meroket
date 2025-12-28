@@ -11,6 +11,7 @@ import { AdminDashboard } from './components/admin/AdminDashboard';
 import { AdminUserList } from './components/admin/AdminUserList';
 import { NewPortfolioData, supabase } from './lib/supabase';
 import { cleanupUnusedImages } from './lib/storageUtils';
+import { loadAllFonts } from './components/FontSelector';
 
 // Protected Route Component
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -429,6 +430,11 @@ function AppRoutes() {
 }
 
 function App() {
+  // Load all Google Fonts on app initialization
+  useEffect(() => {
+    loadAllFonts();
+  }, []);
+
   return (
     <Router>
       <AuthProvider>
