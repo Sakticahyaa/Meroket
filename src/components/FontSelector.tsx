@@ -34,8 +34,6 @@ export function FontSelector({
 }: FontSelectorProps) {
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newFont = e.target.value;
-    console.log('🎨 FontSelector: Font changed to:', newFont);
-    loadGoogleFont(newFont); // Load the font immediately when selected
     onChange(newFont);
   };
 
@@ -96,43 +94,27 @@ export function FontSelector({
 }
 
 // Helper function to load Google Fonts dynamically
+// Note: Fonts are now preloaded in index.html, so this is a fallback
 export function loadGoogleFont(fontFamily: string) {
   const font = AVAILABLE_FONTS.find((f) => f.value === fontFamily);
-  if (!font) {
-    console.warn('⚠️ Font not found in AVAILABLE_FONTS:', fontFamily);
-    return;
-  }
+  if (!font) return;
 
   const fontId = `google-font-${fontFamily.replace(/\s+/g, '-')}`;
 
   // Check if already loaded
-  if (document.getElementById(fontId)) {
-    console.log('✅ Font already loaded:', fontFamily);
-    return;
-  }
+  if (document.getElementById(fontId)) return;
 
   const link = document.createElement('link');
   link.id = fontId;
   link.rel = 'stylesheet';
   link.href = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/\s+/g, '+')}:wght@${font.weights}&display=swap`;
-
-  link.onload = () => {
-    console.log('✅ Font loaded successfully:', fontFamily, link.href);
-  };
-
-  link.onerror = () => {
-    console.error('❌ Failed to load font:', fontFamily, link.href);
-  };
-
   document.head.appendChild(link);
-  console.log('📥 Loading font:', fontFamily, link.href);
 }
 
 // Load all fonts on app initialization
+// Note: Fonts are now preloaded in index.html, so this is a fallback
 export function loadAllFonts() {
-  console.log('🚀 Loading all Google Fonts...');
   AVAILABLE_FONTS.forEach((font) => {
     loadGoogleFont(font.value);
   });
-  console.log('📚 Requested', AVAILABLE_FONTS.length, 'fonts');
 }
