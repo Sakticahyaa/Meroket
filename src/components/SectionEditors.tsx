@@ -324,13 +324,13 @@ export function HeroEditor({
       {/* Font Selectors */}
       <FontSelector
         value={section.titleFont || 'Inter'}
-        onChange={(font) => onChange({ ...section, titleFont: font })}
+        onChange={(titleFont) => onChange({ ...section, titleFont })}
         label="Title Font"
       />
 
       <FontSelector
         value={section.subtitleFont || 'Inter'}
-        onChange={(font) => onChange({ ...section, subtitleFont: font })}
+        onChange={(subtitleFont) => onChange({ ...section, subtitleFont })}
         label="Subtitle Font"
       />
 
@@ -563,7 +563,7 @@ export function AboutEditor({
       {/* Font Selector */}
       <FontSelector
         value={section.font || 'Inter'}
-        onChange={(font) => onChange({ ...section, font })}
+        onChange={(font) => onChange({ ...section, font: font })}
         label="Section Font"
       />
 
@@ -854,7 +854,7 @@ export function SkillsEditor({
       {/* Font Selector */}
       <FontSelector
         value={section.font || 'Inter'}
-        onChange={(font) => onChange({ ...section, font })}
+        onChange={(font) => onChange({ ...section, font: font })}
         label="Section Font"
       />
 
@@ -1095,7 +1095,7 @@ export function ExperienceEditor({
       {/* Font Selector */}
       <FontSelector
         value={section.font || 'Inter'}
-        onChange={(font) => onChange({ ...section, font })}
+        onChange={(font) => onChange({ ...section, font: font })}
         label="Section Font"
       />
 
@@ -1425,7 +1425,7 @@ export function ProjectsEditor({
       {/* Font Selector */}
       <FontSelector
         value={section.font || 'Inter'}
-        onChange={(font) => onChange({ ...section, font })}
+        onChange={(font) => onChange({ ...section, font: font })}
         label="Section Font"
       />
 
@@ -1618,7 +1618,7 @@ export function TestimonialsEditor({
       {/* Font Selector */}
       <FontSelector
         value={section.font || 'Inter'}
-        onChange={(font) => onChange({ ...section, font })}
+        onChange={(font) => onChange({ ...section, font: font })}
         label="Section Font"
       />
 
@@ -1768,7 +1768,7 @@ export function ContactEditor({
       {/* Font Selector */}
       <FontSelector
         value={section.font || 'Inter'}
-        onChange={(font) => onChange({ ...section, font })}
+        onChange={(font) => onChange({ ...section, font: font })}
         label="Section Font"
       />
 
