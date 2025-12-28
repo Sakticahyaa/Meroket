@@ -262,7 +262,7 @@ function DashboardApp() {
       setEditingSlug(undefined);
       setPortfolioData(undefined);
     }
-  }, [location.pathname, slug, user, navigate]);
+  }, [location.pathname, slug, user?.id, navigate]);
 
   const handleSave = async (data: NewPortfolioData, publish: boolean) => {
     if (!user) {

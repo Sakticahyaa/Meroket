@@ -18,6 +18,7 @@ import { uploadImage, deleteImage, isSupabaseStorageUrl } from '../lib/storageUt
 import { ImageCropperModal } from './ImageCropperModal';
 import { FontSelector } from './FontSelector';
 import { AnimationSettings } from './AnimationSettings';
+import { BackgroundSettings } from './BackgroundSettings';
 
 // Hero Section Editor
 export function HeroEditor({
@@ -365,6 +366,38 @@ export function AboutEditor({
   section: AboutSection;
   onChange: (section: AboutSection) => void;
 }) {
+  const [cropperOpen, setCropperOpen] = useState(false);
+  const [tempImage, setTempImage] = useState<string>('');
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setTempImage(reader.result as string);
+        setCropperOpen(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleCropComplete = async (croppedBlob: Blob) => {
+    try {
+      setIsUploadingImage(true);
+      const file = new File([croppedBlob], 'about-profile.jpg', { type: 'image/jpeg' });
+      const url = await uploadImage(file, 'about-profiles');
+      onChange({ ...section, image: url });
+      setCropperOpen(false);
+      setTempImage('');
+    } catch (error) {
+      console.error('Failed to upload image:', error);
+      alert('Failed to upload image. Please try again.');
+    } finally {
+      setIsUploadingImage(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div>
@@ -388,22 +421,16 @@ export function AboutEditor({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Profile Image</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Profile Image {isUploadingImage && '(Uploading...)'}
+        </label>
         <div className="flex flex-col gap-2">
           <input
             type="file"
             accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                  onChange({ ...section, image: reader.result as string });
-                };
-                reader.readAsDataURL(file);
-              }
-            }}
-            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            onChange={handleImageSelect}
+            disabled={isUploadingImage}
+            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
           />
           {section.image && (
             <div className="relative w-32 h-32 mx-auto rounded border border-gray-300 overflow-hidden">
@@ -501,6 +528,38 @@ export function AboutEditor({
         settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
         onChange={(animation) => onChange({ ...section, animation })}
       />
+
+      {/* Background Settings */}
+      <BackgroundSettings
+        backgroundType={section.backgroundType || 'color'}
+        backgroundColor={section.backgroundColor}
+        gradientType={section.gradientType}
+        gradientStart={section.gradientStart}
+        gradientEnd={section.gradientEnd}
+        gradientDirection={section.gradientDirection}
+        backgroundImage={section.backgroundImage}
+        onBackgroundTypeChange={(backgroundType) => onChange({ ...section, backgroundType })}
+        onBackgroundColorChange={(backgroundColor) => onChange({ ...section, backgroundColor })}
+        onGradientTypeChange={(gradientType) => onChange({ ...section, gradientType })}
+        onGradientStartChange={(gradientStart) => onChange({ ...section, gradientStart })}
+        onGradientEndChange={(gradientEnd) => onChange({ ...section, gradientEnd })}
+        onGradientDirectionChange={(gradientDirection) => onChange({ ...section, gradientDirection })}
+        onBackgroundImageChange={(backgroundImage) => onChange({ ...section, backgroundImage })}
+      />
+
+      {/* Image Cropper Modal */}
+      {cropperOpen && (
+        <ImageCropperModal
+          isOpen={cropperOpen}
+          imageUrl={tempImage}
+          onCropComplete={handleCropComplete}
+          onCancel={() => {
+            setCropperOpen(false);
+            setTempImage('');
+          }}
+          title="Crop Profile Image"
+        />
+      )}
     </div>
   );
 }
@@ -580,16 +639,6 @@ export function SkillsEditor({
           value={section.title}
           onChange={(e) => onChange({ ...section, title: e.target.value })}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">Background Color</label>
-        <input
-          type="color"
-          value={section.backgroundColor || '#F8FAFC'}
-          onChange={(e) => onChange({ ...section, backgroundColor: e.target.value })}
-          className="w-full h-10 rounded border border-gray-300"
         />
       </div>
 
@@ -700,6 +749,24 @@ export function SkillsEditor({
       <AnimationSettings
         settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
         onChange={(animation) => onChange({ ...section, animation })}
+      />
+
+      {/* Background Settings */}
+      <BackgroundSettings
+        backgroundType={section.backgroundType || 'color'}
+        backgroundColor={section.backgroundColor}
+        gradientType={section.gradientType}
+        gradientStart={section.gradientStart}
+        gradientEnd={section.gradientEnd}
+        gradientDirection={section.gradientDirection}
+        backgroundImage={section.backgroundImage}
+        onBackgroundTypeChange={(backgroundType) => onChange({ ...section, backgroundType })}
+        onBackgroundColorChange={(backgroundColor) => onChange({ ...section, backgroundColor })}
+        onGradientTypeChange={(gradientType) => onChange({ ...section, gradientType })}
+        onGradientStartChange={(gradientStart) => onChange({ ...section, gradientStart })}
+        onGradientEndChange={(gradientEnd) => onChange({ ...section, gradientEnd })}
+        onGradientDirectionChange={(gradientDirection) => onChange({ ...section, gradientDirection })}
+        onBackgroundImageChange={(backgroundImage) => onChange({ ...section, backgroundImage })}
       />
 
       {/* Image Cropper Modal */}
@@ -893,6 +960,24 @@ export function ExperienceEditor({
       <AnimationSettings
         settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
         onChange={(animation) => onChange({ ...section, animation })}
+      />
+
+      {/* Background Settings */}
+      <BackgroundSettings
+        backgroundType={section.backgroundType || 'color'}
+        backgroundColor={section.backgroundColor}
+        gradientType={section.gradientType}
+        gradientStart={section.gradientStart}
+        gradientEnd={section.gradientEnd}
+        gradientDirection={section.gradientDirection}
+        backgroundImage={section.backgroundImage}
+        onBackgroundTypeChange={(backgroundType) => onChange({ ...section, backgroundType })}
+        onBackgroundColorChange={(backgroundColor) => onChange({ ...section, backgroundColor })}
+        onGradientTypeChange={(gradientType) => onChange({ ...section, gradientType })}
+        onGradientStartChange={(gradientStart) => onChange({ ...section, gradientStart })}
+        onGradientEndChange={(gradientEnd) => onChange({ ...section, gradientEnd })}
+        onGradientDirectionChange={(gradientDirection) => onChange({ ...section, gradientDirection })}
+        onBackgroundImageChange={(backgroundImage) => onChange({ ...section, backgroundImage })}
       />
     </div>
   );
@@ -1138,6 +1223,24 @@ export function ProjectsEditor({
         settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
         onChange={(animation) => onChange({ ...section, animation })}
       />
+
+      {/* Background Settings */}
+      <BackgroundSettings
+        backgroundType={section.backgroundType || 'color'}
+        backgroundColor={section.backgroundColor}
+        gradientType={section.gradientType}
+        gradientStart={section.gradientStart}
+        gradientEnd={section.gradientEnd}
+        gradientDirection={section.gradientDirection}
+        backgroundImage={section.backgroundImage}
+        onBackgroundTypeChange={(backgroundType) => onChange({ ...section, backgroundType })}
+        onBackgroundColorChange={(backgroundColor) => onChange({ ...section, backgroundColor })}
+        onGradientTypeChange={(gradientType) => onChange({ ...section, gradientType })}
+        onGradientStartChange={(gradientStart) => onChange({ ...section, gradientStart })}
+        onGradientEndChange={(gradientEnd) => onChange({ ...section, gradientEnd })}
+        onGradientDirectionChange={(gradientDirection) => onChange({ ...section, gradientDirection })}
+        onBackgroundImageChange={(backgroundImage) => onChange({ ...section, backgroundImage })}
+      />
     </div>
   );
 }
@@ -1283,6 +1386,24 @@ export function TestimonialsEditor({
         settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
         onChange={(animation) => onChange({ ...section, animation })}
       />
+
+      {/* Background Settings */}
+      <BackgroundSettings
+        backgroundType={section.backgroundType || 'color'}
+        backgroundColor={section.backgroundColor}
+        gradientType={section.gradientType}
+        gradientStart={section.gradientStart}
+        gradientEnd={section.gradientEnd}
+        gradientDirection={section.gradientDirection}
+        backgroundImage={section.backgroundImage}
+        onBackgroundTypeChange={(backgroundType) => onChange({ ...section, backgroundType })}
+        onBackgroundColorChange={(backgroundColor) => onChange({ ...section, backgroundColor })}
+        onGradientTypeChange={(gradientType) => onChange({ ...section, gradientType })}
+        onGradientStartChange={(gradientStart) => onChange({ ...section, gradientStart })}
+        onGradientEndChange={(gradientEnd) => onChange({ ...section, gradientEnd })}
+        onGradientDirectionChange={(gradientDirection) => onChange({ ...section, gradientDirection })}
+        onBackgroundImageChange={(backgroundImage) => onChange({ ...section, backgroundImage })}
+      />
     </div>
   );
 }
@@ -1394,6 +1515,24 @@ export function ContactEditor({
       <AnimationSettings
         settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
         onChange={(animation) => onChange({ ...section, animation })}
+      />
+
+      {/* Background Settings */}
+      <BackgroundSettings
+        backgroundType={section.backgroundType || 'color'}
+        backgroundColor={section.backgroundColor}
+        gradientType={section.gradientType}
+        gradientStart={section.gradientStart}
+        gradientEnd={section.gradientEnd}
+        gradientDirection={section.gradientDirection}
+        backgroundImage={section.backgroundImage}
+        onBackgroundTypeChange={(backgroundType) => onChange({ ...section, backgroundType })}
+        onBackgroundColorChange={(backgroundColor) => onChange({ ...section, backgroundColor })}
+        onGradientTypeChange={(gradientType) => onChange({ ...section, gradientType })}
+        onGradientStartChange={(gradientStart) => onChange({ ...section, gradientStart })}
+        onGradientEndChange={(gradientEnd) => onChange({ ...section, gradientEnd})}
+        onGradientDirectionChange={(gradientDirection) => onChange({ ...section, gradientDirection })}
+        onBackgroundImageChange={(backgroundImage) => onChange({ ...section, backgroundImage })}
       />
     </div>
   );

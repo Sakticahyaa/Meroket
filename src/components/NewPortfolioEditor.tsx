@@ -80,6 +80,40 @@ function getAnimationVariants(animation?: { enabled: boolean; type: string; dura
   return variants;
 }
 
+// Helper function to generate background styles
+function getBackgroundStyle(section: any) {
+  let bgStyle: any = {};
+
+  if (section.backgroundType === 'color') {
+    bgStyle = { backgroundColor: section.backgroundColor || '#FFFFFF' };
+  } else if (section.backgroundType === 'gradient') {
+    const isRadial = section.gradientType === 'radial';
+    if (isRadial) {
+      bgStyle = {
+        background: `radial-gradient(circle, ${section.gradientStart || '#667eea'}, ${section.gradientEnd || '#764ba2'})`,
+      };
+    } else {
+      const direction =
+        section.gradientDirection === 'horizontal'
+          ? 'to right'
+          : section.gradientDirection === 'vertical'
+          ? 'to bottom'
+          : 'to bottom right';
+      bgStyle = {
+        background: `linear-gradient(${direction}, ${section.gradientStart || '#667eea'}, ${section.gradientEnd || '#764ba2'})`,
+      };
+    }
+  } else if (section.backgroundType === 'image' && section.backgroundImage) {
+    bgStyle = {
+      backgroundImage: `url(${section.backgroundImage})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+    };
+  }
+
+  return bgStyle;
+}
+
 export default function NewPortfolioEditor({ initialData, onSave, onCancel }: NewPortfolioEditorProps) {
   const { profile } = useAuth();
   const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
