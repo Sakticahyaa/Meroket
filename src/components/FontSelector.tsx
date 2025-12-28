@@ -32,6 +32,13 @@ export function FontSelector({
   onApplyToSection,
   onApplyGlobally,
 }: FontSelectorProps) {
+  const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newFont = e.target.value;
+    console.log('🎨 FontSelector: Font changed to:', newFont);
+    loadGoogleFont(newFont); // Load the font immediately when selected
+    onChange(newFont);
+  };
+
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
@@ -65,7 +72,7 @@ export function FontSelector({
 
       <select
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={handleChange}
         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
         style={{ fontFamily: value }}
       >
@@ -91,23 +98,41 @@ export function FontSelector({
 // Helper function to load Google Fonts dynamically
 export function loadGoogleFont(fontFamily: string) {
   const font = AVAILABLE_FONTS.find((f) => f.value === fontFamily);
-  if (!font) return;
+  if (!font) {
+    console.warn('⚠️ Font not found in AVAILABLE_FONTS:', fontFamily);
+    return;
+  }
 
   const fontId = `google-font-${fontFamily.replace(/\s+/g, '-')}`;
 
   // Check if already loaded
-  if (document.getElementById(fontId)) return;
+  if (document.getElementById(fontId)) {
+    console.log('✅ Font already loaded:', fontFamily);
+    return;
+  }
 
   const link = document.createElement('link');
   link.id = fontId;
   link.rel = 'stylesheet';
   link.href = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/\s+/g, '+')}:wght@${font.weights}&display=swap`;
+
+  link.onload = () => {
+    console.log('✅ Font loaded successfully:', fontFamily, link.href);
+  };
+
+  link.onerror = () => {
+    console.error('❌ Failed to load font:', fontFamily, link.href);
+  };
+
   document.head.appendChild(link);
+  console.log('📥 Loading font:', fontFamily, link.href);
 }
 
 // Load all fonts on app initialization
 export function loadAllFonts() {
+  console.log('🚀 Loading all Google Fonts...');
   AVAILABLE_FONTS.forEach((font) => {
     loadGoogleFont(font.value);
   });
+  console.log('📚 Requested', AVAILABLE_FONTS.length, 'fonts');
 }
