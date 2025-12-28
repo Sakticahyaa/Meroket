@@ -302,6 +302,34 @@ export function HeroEditor({
       </div>
 
       <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Title Alignment</label>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => onChange({ ...section, titleAlignment: 'center' })}
+            className={`px-3 py-2 text-sm rounded-lg border ${
+              (section.titleAlignment || 'center') === 'center'
+                ? 'bg-blue-50 border-blue-500 text-blue-700 font-medium'
+                : 'border-gray-300 text-gray-700'
+            }`}
+          >
+            Center
+          </button>
+          <button
+            type="button"
+            onClick={() => onChange({ ...section, titleAlignment: 'left' })}
+            className={`px-3 py-2 text-sm rounded-lg border ${
+              section.titleAlignment === 'left'
+                ? 'bg-blue-50 border-blue-500 text-blue-700 font-medium'
+                : 'border-gray-300 text-gray-700'
+            }`}
+          >
+            Left
+          </button>
+        </div>
+      </div>
+
+      <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Subtitle</label>
         <input
           type="text"
@@ -418,6 +446,34 @@ export function AboutEditor({
           onChange={(e) => onChange({ ...section, titleColor: e.target.value })}
           className="w-full h-10 rounded border border-gray-300"
         />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Title Alignment</label>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => onChange({ ...section, titleAlignment: 'center' })}
+            className={`px-3 py-2 text-sm rounded-lg border ${
+              (section.titleAlignment || 'center') === 'center'
+                ? 'bg-blue-50 border-blue-500 text-blue-700 font-medium'
+                : 'border-gray-300 text-gray-700'
+            }`}
+          >
+            Center
+          </button>
+          <button
+            type="button"
+            onClick={() => onChange({ ...section, titleAlignment: 'left' })}
+            className={`px-3 py-2 text-sm rounded-lg border ${
+              section.titleAlignment === 'left'
+                ? 'bg-blue-50 border-blue-500 text-blue-700 font-medium'
+                : 'border-gray-300 text-gray-700'
+            }`}
+          >
+            Left
+          </button>
+        </div>
       </div>
 
       <div>
@@ -629,19 +685,19 @@ export function SkillsEditor({
       description: 'Description',
       iconType: 'lucide',
     };
-    onChange({ ...section, cards: [...section.cards, newCard] });
+    onChange({ ...section, cards: [...(section.cards || []), newCard] });
     setEditingCard(newCard.id);
   };
 
   const updateCard = (id: string, updates: Partial<SkillCard>) => {
     onChange({
       ...section,
-      cards: section.cards.map((card) => (card.id === id ? { ...card, ...updates } : card)),
+      cards: (section.cards || []).map((card) => (card.id === id ? { ...card, ...updates } : card)),
     });
   };
 
   const deleteCard = (id: string) => {
-    onChange({ ...section, cards: section.cards.filter((card) => card.id !== id) });
+    onChange({ ...section, cards: (section.cards || []).filter((card) => card.id !== id) });
   };
 
   const handleIconSelect = (cardId: string, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -697,6 +753,34 @@ export function SkillsEditor({
       </div>
 
       <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Title Alignment</label>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => onChange({ ...section, titleAlignment: 'center' })}
+            className={`px-3 py-2 text-sm rounded-lg border ${
+              (section.titleAlignment || 'center') === 'center'
+                ? 'bg-blue-50 border-blue-500 text-blue-700 font-medium'
+                : 'border-gray-300 text-gray-700'
+            }`}
+          >
+            Center
+          </button>
+          <button
+            type="button"
+            onClick={() => onChange({ ...section, titleAlignment: 'left' })}
+            className={`px-3 py-2 text-sm rounded-lg border ${
+              section.titleAlignment === 'left'
+                ? 'bg-blue-50 border-blue-500 text-blue-700 font-medium'
+                : 'border-gray-300 text-gray-700'
+            }`}
+          >
+            Left
+          </button>
+        </div>
+      </div>
+
+      <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Card Title Color</label>
         <input
           type="color"
@@ -729,7 +813,7 @@ export function SkillsEditor({
         </div>
 
         <div className="space-y-2">
-          {section.cards.map((card) => (
+          {(section.cards || []).map((card) => (
             <div key={card.id} className="border border-gray-200 rounded-lg p-3">
               {editingCard === card.id ? (
                 <div className="space-y-2">
@@ -929,19 +1013,19 @@ export function ExperienceEditor({
       fullDescription: 'Full description of the experience...',
       tags: [],
     };
-    onChange({ ...section, cards: [...section.cards, newCard] });
+    onChange({ ...section, cards: [...(section.cards || []), newCard] });
     setEditingCard(newCard.id);
   };
 
   const updateCard = (id: string, updates: Partial<ExperienceCard>) => {
     onChange({
       ...section,
-      cards: section.cards.map((card) => (card.id === id ? { ...card, ...updates } : card)),
+      cards: (section.cards || []).map((card) => (card.id === id ? { ...card, ...updates } : card)),
     });
   };
 
   const deleteCard = (id: string) => {
-    onChange({ ...section, cards: section.cards.filter((card) => card.id !== id) });
+    onChange({ ...section, cards: (section.cards || []).filter((card) => card.id !== id) });
   };
 
   return (
@@ -965,6 +1049,34 @@ export function ExperienceEditor({
           onChange={(e) => onChange({ ...section, titleColor: e.target.value })}
           className="w-full h-10 rounded border border-gray-300"
         />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Title Alignment</label>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => onChange({ ...section, titleAlignment: 'center' })}
+            className={`px-3 py-2 text-sm rounded-lg border ${
+              (section.titleAlignment || 'center') === 'center'
+                ? 'bg-blue-50 border-blue-500 text-blue-700 font-medium'
+                : 'border-gray-300 text-gray-700'
+            }`}
+          >
+            Center
+          </button>
+          <button
+            type="button"
+            onClick={() => onChange({ ...section, titleAlignment: 'left' })}
+            className={`px-3 py-2 text-sm rounded-lg border ${
+              section.titleAlignment === 'left'
+                ? 'bg-blue-50 border-blue-500 text-blue-700 font-medium'
+                : 'border-gray-300 text-gray-700'
+            }`}
+          >
+            Left
+          </button>
+        </div>
       </div>
 
       <div>
@@ -1010,7 +1122,7 @@ export function ExperienceEditor({
         </div>
 
         <div className="space-y-2">
-          {section.cards.map((card) => (
+          {(section.cards || []).map((card) => (
             <div key={card.id} className="border border-gray-200 rounded-lg p-3">
               {editingCard === card.id ? (
                 <div className="space-y-2">
@@ -1139,24 +1251,26 @@ export function ProjectsEditor({
   const addItem = () => {
     const newItem: ProjectItem = {
       id: Date.now().toString(),
-      title: 'Director of Product Design',
-      description: 'Led the product design team...',
-      skills: ['LEADERSHIP', 'DESIGN STRATEGY'],
+      title: 'Senior UX Design Lead',
+      description: 'Led the design team to enhance the end-to-end platform, driving adoption and flexibility while strengthening competitive edge through improved user experiences.',
+      skills: ['LEAD DESIGNER', 'DESIGN STRATEGY', 'EXPERIENCE VISION', 'STAKEHOLDER MANAGEMENT'],
       learnMoreURL: '',
+      image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&h=600&fit=crop',
+      imagePosition: 'top',
     };
-    onChange({ ...section, items: [...section.items, newItem] });
+    onChange({ ...section, items: [...(section.items || []), newItem] });
     setEditingItem(newItem.id);
   };
 
   const updateItem = (id: string, updates: Partial<ProjectItem>) => {
     onChange({
       ...section,
-      items: section.items.map((item) => (item.id === id ? { ...item, ...updates } : item)),
+      items: (section.items || []).map((item) => (item.id === id ? { ...item, ...updates } : item)),
     });
   };
 
   const deleteItem = (id: string) => {
-    onChange({ ...section, items: section.items.filter((item) => item.id !== id) });
+    onChange({ ...section, items: (section.items || []).filter((item) => item.id !== id) });
   };
 
   const updateSkills = (id: string, skillsString: string) => {
@@ -1185,6 +1299,34 @@ export function ProjectsEditor({
           onChange={(e) => onChange({ ...section, titleColor: e.target.value })}
           className="w-full h-10 rounded border border-gray-300"
         />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Title Alignment</label>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => onChange({ ...section, titleAlignment: 'center' })}
+            className={`px-3 py-2 text-sm rounded-lg border ${
+              (section.titleAlignment || 'center') === 'center'
+                ? 'bg-blue-50 border-blue-500 text-blue-700 font-medium'
+                : 'border-gray-300 text-gray-700'
+            }`}
+          >
+            Center
+          </button>
+          <button
+            type="button"
+            onClick={() => onChange({ ...section, titleAlignment: 'left' })}
+            className={`px-3 py-2 text-sm rounded-lg border ${
+              section.titleAlignment === 'left'
+                ? 'bg-blue-50 border-blue-500 text-blue-700 font-medium'
+                : 'border-gray-300 text-gray-700'
+            }`}
+          >
+            Left
+          </button>
+        </div>
       </div>
 
       <div>
@@ -1230,7 +1372,7 @@ export function ProjectsEditor({
         </div>
 
         <div className="space-y-3">
-          {section.items.map((item) => (
+          {(section.items || []).map((item) => (
             <div key={item.id} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
               {editingItem === item.id ? (
                 <div className="space-y-3">
@@ -1259,29 +1401,33 @@ export function ProjectsEditor({
                     )}
                   </div>
 
-                  {/* Logo */}
+                  {/* Image Position */}
                   <div>
-                    <label className="block text-xs text-gray-600 mb-1">Company Logo (Optional)</label>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            updateItem(item.id, { logo: reader.result as string });
-                          };
-                          reader.readAsDataURL(file);
-                        }
-                      }}
-                      className="block w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                    />
-                    {item.logo && (
-                      <div className="mt-2 w-16 h-16 rounded border border-gray-300 overflow-hidden bg-white p-2">
-                        <img src={item.logo} alt="Logo preview" className="w-full h-full object-contain" />
-                      </div>
-                    )}
+                    <label className="block text-xs text-gray-600 mb-1">Image Position</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => updateItem(item.id, { imagePosition: 'top' })}
+                        className={`px-3 py-2 text-xs rounded-lg border ${
+                          (item.imagePosition || 'top') === 'top'
+                            ? 'bg-blue-50 border-blue-500 text-blue-700 font-medium'
+                            : 'border-gray-300 text-gray-700'
+                        }`}
+                      >
+                        Top (Large)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => updateItem(item.id, { imagePosition: 'left' })}
+                        className={`px-3 py-2 text-xs rounded-lg border ${
+                          item.imagePosition === 'left'
+                            ? 'bg-blue-50 border-blue-500 text-blue-700 font-medium'
+                            : 'border-gray-300 text-gray-700'
+                        }`}
+                      >
+                        Left (Small)
+                      </button>
+                    </div>
                   </div>
 
                   {/* Title */}
@@ -1315,7 +1461,7 @@ export function ProjectsEditor({
                       className="w-full px-2 py-1.5 border border-gray-300 rounded text-xs"
                     />
                     <div className="flex flex-wrap gap-1 mt-2">
-                      {item.skills.map((skill, idx) => (
+                      {(item.skills || []).map((skill, idx) => (
                         <span
                           key={idx}
                           className="px-2 py-1 bg-gray-200 text-gray-700 rounded-full text-xs"
@@ -1391,13 +1537,13 @@ export function ProjectsEditor({
                     </div>
                     <p className="text-xs text-gray-600 mb-2">{item.description.substring(0, 100)}...</p>
                     <div className="flex flex-wrap gap-1">
-                      {item.skills.slice(0, 3).map((skill, idx) => (
+                      {(item.skills || []).slice(0, 3).map((skill, idx) => (
                         <span key={idx} className="px-2 py-0.5 bg-gray-200 text-gray-700 rounded-full text-xs">
                           {skill}
                         </span>
                       ))}
-                      {item.skills.length > 3 && (
-                        <span className="px-2 py-0.5 text-gray-500 text-xs">+{item.skills.length - 3}</span>
+                      {(item.skills || []).length > 3 && (
+                        <span className="px-2 py-0.5 text-gray-500 text-xs">+{(item.skills || []).length - 3}</span>
                       )}
                     </div>
                   </div>
@@ -1473,19 +1619,19 @@ export function TestimonialsEditor({
       author: 'Client Name',
       role: 'CEO, Company',
     };
-    onChange({ ...section, cards: [...section.cards, newCard] });
+    onChange({ ...section, cards: [...(section.cards || []), newCard] });
     setEditingCard(newCard.id);
   };
 
   const updateCard = (id: string, updates: Partial<TestimonialCard>) => {
     onChange({
       ...section,
-      cards: section.cards.map((card) => (card.id === id ? { ...card, ...updates } : card)),
+      cards: (section.cards || []).map((card) => (card.id === id ? { ...card, ...updates } : card)),
     });
   };
 
   const deleteCard = (id: string) => {
-    onChange({ ...section, cards: section.cards.filter((card) => card.id !== id) });
+    onChange({ ...section, cards: (section.cards || []).filter((card) => card.id !== id) });
   };
 
   return (
@@ -1508,6 +1654,34 @@ export function TestimonialsEditor({
           onChange={(e) => onChange({ ...section, titleColor: e.target.value })}
           className="w-full h-10 rounded border border-gray-300"
         />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Title Alignment</label>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => onChange({ ...section, titleAlignment: 'center' })}
+            className={`px-3 py-2 text-sm rounded-lg border ${
+              (section.titleAlignment || 'center') === 'center'
+                ? 'bg-blue-50 border-blue-500 text-blue-700 font-medium'
+                : 'border-gray-300 text-gray-700'
+            }`}
+          >
+            Center
+          </button>
+          <button
+            type="button"
+            onClick={() => onChange({ ...section, titleAlignment: 'left' })}
+            className={`px-3 py-2 text-sm rounded-lg border ${
+              section.titleAlignment === 'left'
+                ? 'bg-blue-50 border-blue-500 text-blue-700 font-medium'
+                : 'border-gray-300 text-gray-700'
+            }`}
+          >
+            Left
+          </button>
+        </div>
       </div>
 
       <div>
@@ -1553,7 +1727,7 @@ export function TestimonialsEditor({
         </div>
 
         <div className="space-y-2">
-          {section.cards.map((card) => (
+          {(section.cards || []).map((card) => (
             <div key={card.id} className="border border-gray-200 rounded-lg p-3">
               {editingCard === card.id ? (
                 <div className="space-y-2">
@@ -1677,6 +1851,34 @@ export function ContactEditor({
           onChange={(e) => onChange({ ...section, titleColor: e.target.value })}
           className="w-full h-10 rounded border border-gray-300"
         />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Title Alignment</label>
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => onChange({ ...section, titleAlignment: 'center' })}
+            className={`px-3 py-2 text-sm rounded-lg border ${
+              (section.titleAlignment || 'center') === 'center'
+                ? 'bg-blue-50 border-blue-500 text-blue-700 font-medium'
+                : 'border-gray-300 text-gray-700'
+            }`}
+          >
+            Center
+          </button>
+          <button
+            type="button"
+            onClick={() => onChange({ ...section, titleAlignment: 'left' })}
+            className={`px-3 py-2 text-sm rounded-lg border ${
+              section.titleAlignment === 'left'
+                ? 'bg-blue-50 border-blue-500 text-blue-700 font-medium'
+                : 'border-gray-300 text-gray-700'
+            }`}
+          >
+            Left
+          </button>
+        </div>
       </div>
 
       <div>

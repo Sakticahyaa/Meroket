@@ -175,11 +175,9 @@ function EditorRoute() {
             .single();
 
       if (error) throw error;
-
-      alert(publish ? 'Portfolio published successfully!' : 'Portfolio saved successfully!');
     } catch (error: any) {
       console.error('Error saving portfolio:', error);
-      alert(`Failed to save portfolio: ${error.message}`);
+      throw error;
     }
   };
 
@@ -326,11 +324,9 @@ function DashboardApp() {
             .single();
 
       if (error) throw error;
-
-      alert(publish ? 'Portfolio published successfully!' : 'Portfolio saved successfully!');
     } catch (error: any) {
       console.error('Error saving portfolio:', error);
-      alert(`Failed to save portfolio: ${error.message}`);
+      throw error;
     }
   };
 

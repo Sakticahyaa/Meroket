@@ -212,7 +212,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
           return (
             <section
               key={`hero-${index}`}
-              className="relative min-h-screen flex items-center justify-center px-4"
+              className="relative min-h-screen flex items-center justify-center px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20"
               style={bgStyle}
             >
               {heroData.backgroundType === 'image' && (
@@ -235,7 +235,9 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                 variants={heroVariants}
               >
                 <h1
-                  className="text-5xl md:text-7xl font-bold mb-6"
+                  className={`text-5xl md:text-7xl font-bold mb-6 ${
+                    heroData.titleAlignment === 'left' ? 'text-left' : 'text-center'
+                  }`}
                   style={{
                     color: heroData.titleColor || '#1F2937',
                     fontFamily: heroData.titleFont || 'Inter',
@@ -282,7 +284,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
             <section
               key={`about-${index}`}
               id="section-about"
-              className="relative py-20 px-4"
+              className="relative py-20 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20"
               style={bgStyle}
             >
               {aboutData.backgroundType === 'image' && (
@@ -314,7 +316,9 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                   )}
                   <div>
                     <h2
-                      className="text-4xl font-bold mb-6"
+                      className={`text-4xl font-bold mb-6 ${
+                        aboutData.titleAlignment === 'left' ? 'text-left' : 'text-center'
+                      }`}
                       style={{
                         fontFamily: aboutData.titleFont || aboutData.font || 'Inter',
                         color: aboutData.titleColor || '#1F2937'
@@ -350,7 +354,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
             <section
               key={`skills-${index}`}
               id="section-skills"
-              className="relative py-20 px-4"
+              className="relative py-20 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20"
               style={bgStyle}
             >
               {skillsData.backgroundType === 'image' && (
@@ -364,7 +368,9 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                 variants={skillsVariants}
               >
                 <h2
-                  className="text-4xl font-bold text-center mb-12"
+                  className={`text-4xl font-bold mb-12 ${
+                    skillsData.titleAlignment === 'left' ? 'text-left' : 'text-center'
+                  }`}
                   style={{
                     fontFamily: skillsData.titleFont || skillsData.font || 'Inter',
                     color: skillsData.titleColor || '#1F2937'
@@ -425,7 +431,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
             <section
               key={`experience-${index}`}
               id="section-experience"
-              className="relative py-20 px-4"
+              className="relative py-20 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20"
               style={bgStyle}
             >
               {experienceData.backgroundType === 'image' && (
@@ -439,7 +445,9 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                 variants={experienceVariants}
               >
                 <h2
-                  className="text-4xl font-bold text-center mb-12"
+                  className={`text-4xl font-bold mb-12 ${
+                    experienceData.titleAlignment === 'left' ? 'text-left' : 'text-center'
+                  }`}
                   style={{
                     fontFamily: experienceData.titleFont || experienceData.font || 'Inter',
                     color: experienceData.titleColor || '#1F2937'
@@ -512,7 +520,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
             <section
               key={`projects-${index}`}
               id="section-projects"
-              className="relative py-20 px-4"
+              className="relative py-20 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20"
               style={bgStyle}
             >
               {projectsData.backgroundType === 'image' && (
@@ -526,7 +534,9 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                 variants={projectsVariants}
               >
                 <h2
-                  className="text-4xl font-bold text-center mb-12"
+                  className={`text-4xl font-bold mb-12 ${
+                    projectsData.titleAlignment === 'left' ? 'text-left' : 'text-center'
+                  }`}
                   style={{
                     fontFamily: projectsData.titleFont || projectsData.font || 'Inter',
                     color: projectsData.titleColor || '#1F2937'
@@ -535,80 +545,138 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                   {projectsData.title}
                 </h2>
                 <div className="space-y-8">
-                  {projectsData.items?.map((item: any) => (
-                    <div
-                      key={item.id}
-                      className={`border border-slate-200 rounded-xl overflow-hidden hover:shadow-xl transition-shadow ${
-                        item.backgroundStyle === 'blur' ? 'backdrop-blur-md bg-opacity-70' : ''
-                      }`}
-                      style={{
-                        backgroundColor: item.backgroundColor || '#FFFFFF'
-                      }}
-                    >
-                      {item.image && (
-                        <div
-                          className="h-80 bg-cover bg-center relative cursor-pointer"
-                          style={{ backgroundImage: `url(${item.image})` }}
-                          onClick={() => setLightboxImage(item.image)}
-                        >
-                          {item.logo && (
-                            <div className="absolute top-4 left-4 bg-white p-2 rounded-lg shadow-md">
-                              <img
-                                src={item.logo}
-                                alt="Company logo"
-                                className="h-12 w-12 object-contain"
-                              />
-                            </div>
-                          )}
-                        </div>
-                      )}
-                      <div className="p-8">
-                        <div className="flex items-start justify-between mb-4">
-                          <div className="flex-1">
-                            <h3
-                              className="text-2xl font-bold mb-2"
-                              style={{
-                                fontFamily: projectsData.font || 'Inter',
-                                color: projectsData.itemTitleColor || '#1F2937'
-                              }}
-                            >
-                              {item.title}
-                            </h3>
-                            <p
-                              style={{
-                                fontFamily: projectsData.font || 'Inter',
-                                color: projectsData.itemDescriptionColor || '#6B7280'
-                              }}
-                            >
-                              {item.description}
-                            </p>
-                          </div>
-                        </div>
-                        {item.skills && item.skills.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mb-4">
-                            {item.skills.map((skill: string, idx: number) => (
-                              <span
-                                key={idx}
-                                className="px-4 py-2 bg-slate-100 text-slate-700 rounded-full text-sm font-medium uppercase tracking-wide"
+                  {projectsData.items?.map((item: any) => {
+                    const imagePosition = item.imagePosition || 'top';
+
+                    return (
+                      <div
+                        key={item.id}
+                        className="border border-slate-200 rounded-xl overflow-hidden hover:shadow-xl transition-shadow bg-white"
+                      >
+                        {imagePosition === 'top' ? (
+                          <>
+                            {/* Image on top - Large */}
+                            {item.image && (
+                              <div
+                                className="relative w-full flex justify-center pt-8 cursor-pointer"
+                                onClick={() => setLightboxImage(item.image)}
                               >
-                                {skill}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                        {item.learnMoreURL && (
-                          <a
-                            href={item.learnMoreURL}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-                          >
-                            Learn More →
-                          </a>
+                                <img
+                                  src={item.image}
+                                  alt={item.title}
+                                  className="w-2/3 h-auto"
+                                />
+                              </div>
+                            )}
+                            <div className="p-8">
+                              <h3
+                                className="text-2xl font-bold mb-2"
+                                style={{
+                                  fontFamily: projectsData.font || 'Inter',
+                                  color: projectsData.itemTitleColor || '#1F2937'
+                                }}
+                              >
+                                {item.title}
+                              </h3>
+                              <p
+                                className="mb-4"
+                                style={{
+                                  fontFamily: projectsData.font || 'Inter',
+                                  color: projectsData.itemDescriptionColor || '#6B7280'
+                                }}
+                              >
+                                {item.description}
+                              </p>
+                              {item.skills && item.skills.length > 0 && (
+                                <div className="flex flex-wrap gap-2 mb-4">
+                                  {item.skills.map((skill: string, idx: number) => (
+                                    <span
+                                      key={idx}
+                                      className="px-4 py-2 bg-slate-100 text-slate-700 rounded-full text-sm font-medium uppercase tracking-wide"
+                                    >
+                                      {skill}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                              {item.learnMoreURL && (
+                                <a
+                                  href={item.learnMoreURL}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+                                >
+                                  Learn More →
+                                </a>
+                              )}
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            {/* Image on left - Small */}
+                            <div className="flex gap-6 p-8">
+                              {item.image && (
+                                <div
+                                  className="flex-shrink-0 flex items-center justify-center cursor-pointer"
+                                  onClick={() => setLightboxImage(item.image)}
+                                >
+                                  <div className="w-48 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                                    <img
+                                      src={item.image}
+                                      alt={item.title}
+                                      className="w-full h-auto"
+                                    />
+                                  </div>
+                                </div>
+                              )}
+                              <div className="flex-1">
+                                <h3
+                                  className="text-2xl font-bold mb-2"
+                                  style={{
+                                    fontFamily: projectsData.font || 'Inter',
+                                    color: projectsData.itemTitleColor || '#1F2937'
+                                  }}
+                                >
+                                  {item.title}
+                                </h3>
+                                <p
+                                  className="mb-4"
+                                  style={{
+                                    fontFamily: projectsData.font || 'Inter',
+                                    color: projectsData.itemDescriptionColor || '#6B7280'
+                                  }}
+                                >
+                                  {item.description}
+                                </p>
+                                {item.skills && item.skills.length > 0 && (
+                                  <div className="flex flex-wrap gap-2 mb-4">
+                                    {item.skills.map((skill: string, idx: number) => (
+                                      <span
+                                        key={idx}
+                                        className="px-4 py-2 bg-slate-100 text-slate-700 rounded-full text-sm font-medium uppercase tracking-wide"
+                                      >
+                                        {skill}
+                                      </span>
+                                    ))}
+                                  </div>
+                                )}
+                                {item.learnMoreURL && (
+                                  <a
+                                    href={item.learnMoreURL}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+                                  >
+                                    Learn More →
+                                  </a>
+                                )}
+                              </div>
+                            </div>
+                          </>
                         )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </motion.div>
             </section>
@@ -627,7 +695,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
             <section
               key={`testimonials-${index}`}
               id="section-testimonials"
-              className="relative py-20 px-4"
+              className="relative py-20 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20"
               style={bgStyle}
             >
               {testimonialsData.backgroundType === 'image' && (
@@ -641,7 +709,9 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                 variants={testimonialsVariants}
               >
                 <h2
-                  className="text-4xl font-bold text-center mb-12"
+                  className={`text-4xl font-bold mb-12 ${
+                    testimonialsData.titleAlignment === 'left' ? 'text-left' : 'text-center'
+                  }`}
                   style={{
                     fontFamily: testimonialsData.titleFont || testimonialsData.font || 'Inter',
                     color: testimonialsData.titleColor || '#1F2937'
@@ -704,14 +774,16 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
             <section
               key={`contact-${index}`}
               id="section-contact"
-              className="relative py-20 px-4"
+              className="relative py-20 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20"
               style={bgStyle}
             >
               {contactData.backgroundType === 'image' && (
                 <div className="absolute inset-0 bg-black/20"></div>
               )}
               <motion.div
-                className="max-w-4xl mx-auto text-center relative z-10"
+                className={`max-w-4xl mx-auto relative z-10 ${
+                  contactData.titleAlignment === 'left' ? 'text-left' : 'text-center'
+                }`}
                 initial={hasAnimation ? "hidden" : false}
                 whileInView={hasAnimation ? "visible" : undefined}
                 viewport={{ once: true, margin: "-100px" }}

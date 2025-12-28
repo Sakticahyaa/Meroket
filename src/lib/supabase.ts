@@ -135,6 +135,7 @@ export type HeroSection = {
   subtitleColor: string;
   titleFont?: string;
   subtitleFont?: string;
+  titleAlignment?: 'center' | 'left';
   animation?: AnimationType;
 };
 
@@ -142,6 +143,7 @@ export type AboutSection = {
   type: 'about';
   title: string;
   titleColor?: string;
+  titleAlignment?: 'center' | 'left';
   description: string;
   descriptionColor?: string;
   image?: string;
@@ -176,6 +178,7 @@ export type SkillsSection = {
   type: 'skills';
   title: string;
   titleColor?: string;
+  titleAlignment?: 'center' | 'left';
   cards: SkillCard[];
   cardTitleColor?: string;
   cardDescriptionColor?: string;
@@ -205,6 +208,7 @@ export type ExperienceSection = {
   type: 'experience';
   title: string;
   titleColor?: string;
+  titleAlignment?: 'center' | 'left';
   cards: ExperienceCard[];
   cardTitleColor?: string;
   cardDescriptionColor?: string;
@@ -224,7 +228,7 @@ export type ExperienceSection = {
 export type ProjectItem = {
   id: string;
   image?: string;
-  logo?: string;
+  imagePosition?: 'top' | 'left';
   title: string;
   description: string;
   skills: string[];
@@ -237,6 +241,7 @@ export type ProjectsSection = {
   type: 'projects';
   title: string;
   titleColor?: string;
+  titleAlignment?: 'center' | 'left';
   items: ProjectItem[];
   itemTitleColor?: string;
   itemDescriptionColor?: string;
@@ -263,6 +268,7 @@ export type TestimonialsSection = {
   type: 'testimonials';
   title: string;
   titleColor?: string;
+  titleAlignment?: 'center' | 'left';
   cards: TestimonialCard[];
   cardTextColor?: string;
   cardAuthorColor?: string;
@@ -282,6 +288,7 @@ export type ContactSection = {
   type: 'contact';
   title: string;
   titleColor?: string;
+  titleAlignment?: 'center' | 'left';
   descriptionColor?: string;
   method: 'email' | 'whatsapp';
   email?: string;

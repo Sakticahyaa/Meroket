@@ -7,6 +7,8 @@ import { canAddSection, countTotalProjectCards, getTierBadge, shouldFreezeDueToL
 import { FrozenPortfolioNotice } from './FrozenPortfolioNotice';
 import { PortfolioNavbar } from './PortfolioNavbar';
 import { NavbarEditor } from './NavbarEditor';
+import { Toast } from './Toast';
+import { useToast } from '../hooks/useToast';
 import {
   HeroEditor,
   AboutEditor,
@@ -117,6 +119,7 @@ function getBackgroundStyle(section: any) {
 
 export default function NewPortfolioEditor({ initialData, onSave, onCancel }: NewPortfolioEditorProps) {
   const { profile } = useAuth();
+  const { toast, loading, success, error, hideToast } = useToast();
   const [previewMode, setPreviewMode] = useState<'desktop' | 'mobile'>('desktop');
   const [portfolioData, setPortfolioData] = useState<NewPortfolioData>(
     initialData || {
@@ -268,10 +271,17 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
 
   const handleSave = async (publish: boolean) => {
     if (isFrozen) {
-      alert('This portfolio is frozen and cannot be saved or published. Please check the notice for details.');
+      error('This portfolio is frozen and cannot be saved or published.');
       return;
     }
-    await onSave({ ...portfolioData, is_published: publish }, publish);
+
+    try {
+      loading(publish ? 'Publishing portfolio...' : 'Saving portfolio...');
+      await onSave({ ...portfolioData, is_published: publish }, publish);
+      success(publish ? 'Portfolio published successfully!' : 'Portfolio saved successfully!');
+    } catch (err: any) {
+      error(err.message || 'Failed to save portfolio');
+    }
   };
 
   // Show frozen notice if portfolio is frozen
@@ -567,7 +577,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                   return (
                     <section
                       key={`hero-${index}`}
-                      className="relative min-h-screen flex items-center justify-center px-4"
+                      className="relative min-h-screen flex items-center justify-center px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20"
                       style={bgStyle}
                     >
                       {section.backgroundType === 'image' && (
@@ -590,7 +600,9 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                         variants={heroVariants}
                       >
                         <h1
-                          className="text-5xl md:text-7xl font-bold mb-6"
+                          className={`text-5xl md:text-7xl font-bold mb-6 ${
+                            section.titleAlignment === 'left' ? 'text-left' : 'text-center'
+                          }`}
                           style={{
                             color: section.titleColor || '#1F2937',
                             fontFamily: section.titleFont || 'Inter',
@@ -636,7 +648,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                     <section
                       key={`about-${index}`}
                       id="section-about"
-                      className="relative py-20 px-4"
+                      className="relative py-20 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20"
                       style={bgStyle}
                     >
                       {section.backgroundType === 'image' && (
@@ -668,7 +680,9 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                           )}
                           <div>
                             <h2
-                              className="text-4xl font-bold mb-6"
+                              className={`text-4xl font-bold mb-6 ${
+                                section.titleAlignment === 'left' ? 'text-left' : 'text-center'
+                              }`}
                               style={{
                                 fontFamily: section.titleFont || section.font || 'Inter',
                                 color: section.titleColor || '#1F2937'
@@ -702,7 +716,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                     <section
                       key={`skills-${index}`}
                       id="section-skills"
-                      className="relative py-20 px-4"
+                      className="relative py-20 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20"
                       style={bgStyle}
                     >
                       {section.backgroundType === 'image' && (
@@ -716,7 +730,9 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                         variants={skillsVariants}
                       >
                         <h2
-                          className="text-4xl font-bold text-center mb-12"
+                          className={`text-4xl font-bold mb-12 ${
+                            section.titleAlignment === 'left' ? 'text-left' : 'text-center'
+                          }`}
                           style={{
                             fontFamily: section.titleFont || section.font || 'Inter',
                             color: section.titleColor || '#1F2937'
@@ -775,7 +791,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                     <section
                       key={`experience-${index}`}
                       id="section-experience"
-                      className="relative py-20 px-4"
+                      className="relative py-20 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20"
                       style={bgStyle}
                     >
                       {section.backgroundType === 'image' && (
@@ -789,7 +805,9 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                         variants={experienceVariants}
                       >
                         <h2
-                          className="text-4xl font-bold text-center mb-12"
+                          className={`text-4xl font-bold mb-12 ${
+                            section.titleAlignment === 'left' ? 'text-left' : 'text-center'
+                          }`}
                           style={{
                             fontFamily: section.titleFont || section.font || 'Inter',
                             color: section.titleColor || '#1F2937'
@@ -859,7 +877,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                     <section
                       key={`projects-${index}`}
                       id="section-projects"
-                      className="relative py-20 px-4"
+                      className="relative py-20 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20"
                       style={bgStyle}
                     >
                       {section.backgroundType === 'image' && (
@@ -873,7 +891,9 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                         variants={projectsVariants}
                       >
                         <h2
-                          className="text-4xl font-bold text-center mb-12"
+                          className={`text-4xl font-bold mb-12 ${
+                            section.titleAlignment === 'left' ? 'text-left' : 'text-center'
+                          }`}
                           style={{
                             fontFamily: section.titleFont || section.font || 'Inter',
                             color: section.titleColor || '#1F2937'
@@ -882,79 +902,132 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                           {section.title}
                         </h2>
                         <div className="space-y-8">
-                          {section.items?.map((item: any) => (
-                            <div
-                              key={item.id}
-                              className={`border border-slate-200 rounded-xl overflow-hidden hover:shadow-xl transition-shadow ${
-                                item.backgroundStyle === 'blur' ? 'backdrop-blur-md bg-opacity-70' : ''
-                              }`}
-                              style={{
-                                backgroundColor: item.backgroundColor || '#FFFFFF'
-                              }}
-                            >
-                              {item.image && (
-                                <div
-                                  className="h-80 bg-cover bg-center relative"
-                                  style={{ backgroundImage: `url(${item.image})` }}
-                                >
-                                  {item.logo && (
-                                    <div className="absolute top-4 left-4 bg-white p-2 rounded-lg shadow-md">
-                                      <img
-                                        src={item.logo}
-                                        alt="Company logo"
-                                        className="h-12 w-12 object-contain"
-                                      />
-                                    </div>
-                                  )}
-                                </div>
-                              )}
-                              <div className="p-8">
-                                <div className="flex items-start justify-between mb-4">
-                                  <div className="flex-1">
-                                    <h3
-                                      className="text-2xl font-bold mb-2"
-                                      style={{
-                                        fontFamily: section.font || 'Inter',
-                                        color: section.itemTitleColor || '#1F2937'
-                                      }}
-                                    >
-                                      {item.title}
-                                    </h3>
-                                    <p
-                                      style={{
-                                        fontFamily: section.font || 'Inter',
-                                        color: section.itemDescriptionColor || '#6B7280'
-                                      }}
-                                    >
-                                      {item.description}
-                                    </p>
-                                  </div>
-                                </div>
-                                {item.skills && item.skills.length > 0 && (
-                                  <div className="flex flex-wrap gap-2 mb-4">
-                                    {item.skills.map((skill: string, idx: number) => (
-                                      <span
-                                        key={idx}
-                                        className="px-4 py-2 bg-slate-100 text-slate-700 rounded-full text-sm font-medium uppercase tracking-wide"
+                          {section.items?.map((item: any) => {
+                            const imagePosition = item.imagePosition || 'top';
+
+                            return (
+                              <div
+                                key={item.id}
+                                className="border border-slate-200 rounded-xl overflow-hidden hover:shadow-xl transition-shadow bg-white"
+                              >
+                                {imagePosition === 'top' ? (
+                                  <>
+                                    {/* Image on top - Large */}
+                                    {item.image && (
+                                      <div className="relative w-full flex justify-center pt-8">
+                                        <img
+                                          src={item.image}
+                                          alt={item.title}
+                                          className="w-2/3 h-auto"
+                                        />
+                                      </div>
+                                    )}
+                                    <div className="p-8">
+                                      <h3
+                                        className="text-2xl font-bold mb-2"
+                                        style={{
+                                          fontFamily: section.font || 'Inter',
+                                          color: section.itemTitleColor || '#1F2937'
+                                        }}
                                       >
-                                        {skill}
-                                      </span>
-                                    ))}
-                                  </div>
-                                )}
-                                {item.learnMoreURL && (
-                                  <a
-                                    href={item.learnMoreURL}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
-                                  >
-                                    Learn More →
-                                  </a>
+                                        {item.title}
+                                      </h3>
+                                      <p
+                                        className="mb-4"
+                                        style={{
+                                          fontFamily: section.font || 'Inter',
+                                          color: section.itemDescriptionColor || '#6B7280'
+                                        }}
+                                      >
+                                        {item.description}
+                                      </p>
+                                      {item.skills && item.skills.length > 0 && (
+                                        <div className="flex flex-wrap gap-2 mb-4">
+                                          {item.skills.map((skill: string, idx: number) => (
+                                            <span
+                                              key={idx}
+                                              className="px-4 py-2 bg-slate-100 text-slate-700 rounded-full text-sm font-medium uppercase tracking-wide"
+                                            >
+                                              {skill}
+                                            </span>
+                                          ))}
+                                        </div>
+                                      )}
+                                      {item.learnMoreURL && (
+                                        <a
+                                          href={item.learnMoreURL}
+                                          target="_blank"
+                                          rel="noopener noreferrer"
+                                          className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+                                        >
+                                          Learn More →
+                                        </a>
+                                      )}
+                                    </div>
+                                  </>
+                                ) : (
+                                  <>
+                                    {/* Image on left - Small */}
+                                    <div className="flex gap-6 p-8">
+                                      {item.image && (
+                                        <div className="flex-shrink-0 flex items-center justify-center">
+                                          <div className="w-48 rounded-lg overflow-hidden bg-gray-100 flex items-center justify-center">
+                                            <img
+                                              src={item.image}
+                                              alt={item.title}
+                                              className="w-full h-auto"
+                                            />
+                                          </div>
+                                        </div>
+                                      )}
+                                      <div className="flex-1">
+                                        <h3
+                                          className="text-2xl font-bold mb-2"
+                                          style={{
+                                            fontFamily: section.font || 'Inter',
+                                            color: section.itemTitleColor || '#1F2937'
+                                          }}
+                                        >
+                                          {item.title}
+                                        </h3>
+                                        <p
+                                          className="mb-4"
+                                          style={{
+                                            fontFamily: section.font || 'Inter',
+                                            color: section.itemDescriptionColor || '#6B7280'
+                                          }}
+                                        >
+                                          {item.description}
+                                        </p>
+                                        {item.skills && item.skills.length > 0 && (
+                                          <div className="flex flex-wrap gap-2 mb-4">
+                                            {item.skills.map((skill: string, idx: number) => (
+                                              <span
+                                                key={idx}
+                                                className="px-4 py-2 bg-slate-100 text-slate-700 rounded-full text-sm font-medium uppercase tracking-wide"
+                                              >
+                                                {skill}
+                                              </span>
+                                            ))}
+                                          </div>
+                                        )}
+                                        {item.learnMoreURL && (
+                                          <a
+                                            href={item.learnMoreURL}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium"
+                                          >
+                                            Learn More →
+                                          </a>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </>
                                 )}
                               </div>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       </motion.div>
                     </section>
@@ -971,7 +1044,7 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                     <section
                       key={`testimonials-${index}`}
                       id="section-testimonials"
-                      className="relative py-20 px-4"
+                      className="relative py-20 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20"
                       style={bgStyle}
                     >
                       {section.backgroundType === 'image' && (
@@ -985,7 +1058,9 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                         variants={testimonialsVariants}
                       >
                         <h2
-                          className="text-4xl font-bold text-center mb-12"
+                          className={`text-4xl font-bold mb-12 ${
+                            section.titleAlignment === 'left' ? 'text-left' : 'text-center'
+                          }`}
                           style={{
                             fontFamily: section.titleFont || section.font || 'Inter',
                             color: section.titleColor || '#1F2937'
@@ -1046,14 +1121,16 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
                     <section
                       key={`contact-${index}`}
                       id="section-contact"
-                      className="relative py-20 px-4"
+                      className="relative py-20 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20"
                       style={bgStyle}
                     >
                       {section.backgroundType === 'image' && (
                         <div className="absolute inset-0 bg-black/20"></div>
                       )}
                       <motion.div
-                        className="max-w-4xl mx-auto text-center relative z-10"
+                        className={`max-w-4xl mx-auto relative z-10 ${
+                          section.titleAlignment === 'left' ? 'text-left' : 'text-center'
+                        }`}
                         initial={hasAnimation ? "hidden" : false}
                         whileInView={hasAnimation ? "visible" : undefined}
                         viewport={{ once: true, margin: "-100px" }}
@@ -1150,6 +1227,14 @@ export default function NewPortfolioEditor({ initialData, onSave, onCancel }: Ne
           </div>
         )}
       </div>
+
+      {/* Toast Notification */}
+      <Toast
+        message={toast.message}
+        type={toast.type}
+        isVisible={toast.isVisible}
+        onClose={hideToast}
+      />
     </div>
   );
 }
