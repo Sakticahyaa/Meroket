@@ -268,9 +268,15 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
             triangle: 'clip-triangle',
           };
 
+          const imageSizeClasses: Record<string, string> = {
+            small: 'w-48 h-48',
+            medium: 'w-80 h-80',
+            large: 'w-96 h-96',
+          };
+
           const bgStyle = getBackgroundStyle(aboutData);
           const aboutVariants = getAnimationVariants(aboutData.animation);
-          const hasAnimation = aboutData.animation?.enabled;
+          const hasAnimation = aboutData.animation && aboutData.animation !== 'none';
 
           return (
             <section
@@ -295,7 +301,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                       <img
                         src={aboutData.image}
                         alt="Profile"
-                        className={`w-80 h-80 object-cover ${shapeClasses[aboutData.imageShape] || 'rounded-full'}`}
+                        className={`${imageSizeClasses[aboutData.imageSize || 'medium']} object-cover ${shapeClasses[aboutData.imageShape] || 'rounded-full'}`}
                         style={
                           aboutData.imageBorder
                             ? {
@@ -307,8 +313,22 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                     </div>
                   )}
                   <div>
-                    <h2 className="text-4xl font-bold mb-6 text-slate-900" style={{ fontFamily: aboutData.font || 'Inter' }}>{aboutData.title}</h2>
-                    <p className="text-lg leading-relaxed text-slate-700 whitespace-pre-wrap" style={{ fontFamily: aboutData.font || 'Inter' }}>
+                    <h2
+                      className="text-4xl font-bold mb-6"
+                      style={{
+                        fontFamily: aboutData.titleFont || aboutData.font || 'Inter',
+                        color: aboutData.titleColor || '#1F2937'
+                      }}
+                    >
+                      {aboutData.title}
+                    </h2>
+                    <p
+                      className="text-lg leading-relaxed whitespace-pre-wrap"
+                      style={{
+                        fontFamily: aboutData.descriptionFont || aboutData.font || 'Inter',
+                        color: aboutData.descriptionColor || '#6B7280'
+                      }}
+                    >
                       {aboutData.description}
                     </p>
                   </div>
@@ -324,7 +344,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
 
           const bgStyle = getBackgroundStyle(skillsData);
           const skillsVariants = getAnimationVariants(skillsData.animation);
-          const hasAnimation = skillsData.animation?.enabled;
+          const hasAnimation = skillsData.animation && skillsData.animation !== 'none';
 
           return (
             <section
@@ -343,22 +363,48 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                 viewport={{ once: true, margin: "-100px" }}
                 variants={skillsVariants}
               >
-                <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: skillsData.font || 'Inter' }}>
+                <h2
+                  className="text-4xl font-bold text-center mb-12"
+                  style={{
+                    fontFamily: skillsData.titleFont || skillsData.font || 'Inter',
+                    color: skillsData.titleColor || '#1F2937'
+                  }}
+                >
                   {skillsData.title}
                 </h2>
                 <div className="grid md:grid-cols-3 gap-8">
                   {skillsData.cards?.map((card: any) => (
                     <div
                       key={card.id}
-                      className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+                      className={`p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow ${
+                        card.backgroundStyle === 'blur' ? 'backdrop-blur-md bg-opacity-70' : ''
+                      }`}
+                      style={{
+                        backgroundColor: card.backgroundColor || '#FFFFFF'
+                      }}
                     >
                       {card.icon && (
                         <div className="w-16 h-16 mb-4">
                           <img src={card.icon} alt={card.title} className="w-full h-full object-contain" />
                         </div>
                       )}
-                      <h3 className="text-xl font-bold mb-3 text-slate-900">{card.title}</h3>
-                      <p className="text-slate-600">{card.description}</p>
+                      <h3
+                        className="text-xl font-bold mb-3"
+                        style={{
+                          fontFamily: skillsData.font || 'Inter',
+                          color: skillsData.cardTitleColor || '#1F2937'
+                        }}
+                      >
+                        {card.title}
+                      </h3>
+                      <p
+                        style={{
+                          fontFamily: skillsData.font || 'Inter',
+                          color: skillsData.cardDescriptionColor || '#6B7280'
+                        }}
+                      >
+                        {card.description}
+                      </p>
                     </div>
                   ))}
                 </div>
@@ -373,7 +419,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
 
           const bgStyle = getBackgroundStyle(experienceData);
           const experienceVariants = getAnimationVariants(experienceData.animation);
-          const hasAnimation = experienceData.animation?.enabled;
+          const hasAnimation = experienceData.animation && experienceData.animation !== 'none';
 
           return (
             <section
@@ -392,7 +438,13 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                 viewport={{ once: true, margin: "-100px" }}
                 variants={experienceVariants}
               >
-                <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: experienceData.font || 'Inter' }}>
+                <h2
+                  className="text-4xl font-bold text-center mb-12"
+                  style={{
+                    fontFamily: experienceData.titleFont || experienceData.font || 'Inter',
+                    color: experienceData.titleColor || '#1F2937'
+                  }}
+                >
                   {experienceData.title}
                 </h2>
                 <div className="grid md:grid-cols-2 gap-8">
@@ -409,8 +461,24 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                         />
                       )}
                       <div className="p-6">
-                        <h3 className="text-2xl font-bold mb-3 text-slate-900">{card.title}</h3>
-                        <p className="text-slate-600 mb-3">{card.shortDescription}</p>
+                        <h3
+                          className="text-2xl font-bold mb-3"
+                          style={{
+                            fontFamily: experienceData.font || 'Inter',
+                            color: experienceData.cardTitleColor || '#1F2937'
+                          }}
+                        >
+                          {card.title}
+                        </h3>
+                        <p
+                          className="mb-3"
+                          style={{
+                            fontFamily: experienceData.font || 'Inter',
+                            color: experienceData.cardDescriptionColor || '#6B7280'
+                          }}
+                        >
+                          {card.shortDescription}
+                        </p>
                         {card.tags && card.tags.length > 0 && (
                           <div className="flex flex-wrap gap-2 mt-4">
                             {card.tags.map((tag: string, idx: number) => (
@@ -438,7 +506,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
 
           const bgStyle = getBackgroundStyle(projectsData);
           const projectsVariants = getAnimationVariants(projectsData.animation);
-          const hasAnimation = projectsData.animation?.enabled;
+          const hasAnimation = projectsData.animation && projectsData.animation !== 'none';
 
           return (
             <section
@@ -457,14 +525,25 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                 viewport={{ once: true, margin: "-100px" }}
                 variants={projectsVariants}
               >
-                <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: projectsData.font || 'Inter' }}>
+                <h2
+                  className="text-4xl font-bold text-center mb-12"
+                  style={{
+                    fontFamily: projectsData.titleFont || projectsData.font || 'Inter',
+                    color: projectsData.titleColor || '#1F2937'
+                  }}
+                >
                   {projectsData.title}
                 </h2>
                 <div className="space-y-8">
                   {projectsData.items?.map((item: any) => (
                     <div
                       key={item.id}
-                      className="bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-xl transition-shadow"
+                      className={`border border-slate-200 rounded-xl overflow-hidden hover:shadow-xl transition-shadow ${
+                        item.backgroundStyle === 'blur' ? 'backdrop-blur-md bg-opacity-70' : ''
+                      }`}
+                      style={{
+                        backgroundColor: item.backgroundColor || '#FFFFFF'
+                      }}
                     >
                       {item.image && (
                         <div
@@ -486,8 +565,23 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                       <div className="p-8">
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex-1">
-                            <h3 className="text-2xl font-bold text-slate-900 mb-2">{item.title}</h3>
-                            <p className="text-slate-600">{item.description}</p>
+                            <h3
+                              className="text-2xl font-bold mb-2"
+                              style={{
+                                fontFamily: projectsData.font || 'Inter',
+                                color: projectsData.itemTitleColor || '#1F2937'
+                              }}
+                            >
+                              {item.title}
+                            </h3>
+                            <p
+                              style={{
+                                fontFamily: projectsData.font || 'Inter',
+                                color: projectsData.itemDescriptionColor || '#6B7280'
+                              }}
+                            >
+                              {item.description}
+                            </p>
                           </div>
                         </div>
                         {item.skills && item.skills.length > 0 && (
@@ -527,7 +621,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
 
           const bgStyle = getBackgroundStyle(testimonialsData);
           const testimonialsVariants = getAnimationVariants(testimonialsData.animation);
-          const hasAnimation = testimonialsData.animation?.enabled;
+          const hasAnimation = testimonialsData.animation && testimonialsData.animation !== 'none';
 
           return (
             <section
@@ -546,17 +640,49 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                 viewport={{ once: true, margin: "-100px" }}
                 variants={testimonialsVariants}
               >
-                <h2 className="text-4xl font-bold text-center mb-12 text-slate-900" style={{ fontFamily: testimonialsData.font || 'Inter' }}>
+                <h2
+                  className="text-4xl font-bold text-center mb-12"
+                  style={{
+                    fontFamily: testimonialsData.titleFont || testimonialsData.font || 'Inter',
+                    color: testimonialsData.titleColor || '#1F2937'
+                  }}
+                >
                   {testimonialsData.title}
                 </h2>
                 <div className="grid md:grid-cols-3 gap-8">
                   {testimonialsData.cards?.map((card: any) => (
                     <div key={card.id} className="bg-white p-8 rounded-xl shadow-lg">
                       <div className="text-4xl text-blue-600 mb-4">"</div>
-                      <p className="text-slate-700 mb-6 italic">{card.text}</p>
+                      <p
+                        className="mb-6 italic"
+                        style={{
+                          fontFamily: testimonialsData.font || 'Inter',
+                          color: testimonialsData.cardTextColor || '#1F2937'
+                        }}
+                      >
+                        {card.text}
+                      </p>
                       <div className="border-t border-slate-200 pt-4">
-                        <p className="font-bold text-slate-900">{card.author}</p>
-                        {card.role && <p className="text-sm text-slate-600">{card.role}</p>}
+                        <p
+                          className="font-bold"
+                          style={{
+                            fontFamily: testimonialsData.font || 'Inter',
+                            color: testimonialsData.cardAuthorColor || '#6B7280'
+                          }}
+                        >
+                          {card.author}
+                        </p>
+                        {card.role && (
+                          <p
+                            className="text-sm"
+                            style={{
+                              fontFamily: testimonialsData.font || 'Inter',
+                              color: testimonialsData.cardAuthorColor || '#6B7280'
+                            }}
+                          >
+                            {card.role}
+                          </p>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -572,7 +698,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
 
           const bgStyle = getBackgroundStyle(contactData);
           const contactVariants = getAnimationVariants(contactData.animation);
-          const hasAnimation = contactData.animation?.enabled;
+          const hasAnimation = contactData.animation && contactData.animation !== 'none';
 
           return (
             <section
@@ -591,7 +717,15 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
                 viewport={{ once: true, margin: "-100px" }}
                 variants={contactVariants}
               >
-                <h2 className="text-4xl font-bold mb-8 text-slate-900" style={{ fontFamily: contactData.font || 'Inter' }}>{contactData.title}</h2>
+                <h2
+                  className="text-4xl font-bold mb-8"
+                  style={{
+                    fontFamily: contactData.titleFont || contactData.font || 'Inter',
+                    color: contactData.titleColor || '#1F2937'
+                  }}
+                >
+                  {contactData.title}
+                </h2>
                 <div className="flex justify-center gap-6">
                   {contactData.method === 'email' && contactData.email && (
                     <a

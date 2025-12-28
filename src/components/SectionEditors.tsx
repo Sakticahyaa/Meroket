@@ -411,12 +411,32 @@ export function AboutEditor({
       </div>
 
       <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Title Color</label>
+        <input
+          type="color"
+          value={section.titleColor || '#1F2937'}
+          onChange={(e) => onChange({ ...section, titleColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
+        />
+      </div>
+
+      <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
         <textarea
           value={section.description}
           onChange={(e) => onChange({ ...section, description: e.target.value })}
           rows={4}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Description Color</label>
+        <input
+          type="color"
+          value={section.descriptionColor || '#6B7280'}
+          onChange={(e) => onChange({ ...section, descriptionColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
         />
       </div>
 
@@ -476,6 +496,30 @@ export function AboutEditor({
               }`}
             >
               {shape}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Image Size</label>
+        <div className="grid grid-cols-3 gap-2">
+          {['small', 'medium', 'large'].map((size) => (
+            <button
+              key={size}
+              onClick={() =>
+                onChange({
+                  ...section,
+                  imageSize: size as 'small' | 'medium' | 'large',
+                })
+              }
+              className={`px-3 py-2 rounded-lg border capitalize ${
+                (section.imageSize || 'medium') === size
+                  ? 'bg-blue-50 border-blue-500 text-blue-700'
+                  : 'border-gray-300 text-gray-700'
+              }`}
+            >
+              {size}
             </button>
           ))}
         </div>
@@ -643,6 +687,36 @@ export function SkillsEditor({
       </div>
 
       <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Title Color</label>
+        <input
+          type="color"
+          value={section.titleColor || '#1F2937'}
+          onChange={(e) => onChange({ ...section, titleColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Card Title Color</label>
+        <input
+          type="color"
+          value={section.cardTitleColor || '#1F2937'}
+          onChange={(e) => onChange({ ...section, cardTitleColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Card Description Color</label>
+        <input
+          type="color"
+          value={section.cardDescriptionColor || '#6B7280'}
+          onChange={(e) => onChange({ ...section, cardDescriptionColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
+        />
+      </div>
+
+      <div>
         <div className="flex items-center justify-between mb-2">
           <label className="block text-sm font-medium text-gray-700">Skills/Services</label>
           <button
@@ -704,6 +778,45 @@ export function SkillsEditor({
                       <p className="text-xs text-gray-500 mt-1">Uploading...</p>
                     )}
                   </div>
+
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Card Background Color</label>
+                    <input
+                      type="color"
+                      value={card.backgroundColor || '#FFFFFF'}
+                      onChange={(e) => updateCard(card.id, { backgroundColor: e.target.value })}
+                      className="w-full h-8 rounded border border-gray-300"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Background Style</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => updateCard(card.id, { backgroundStyle: 'solid' })}
+                        className={`px-2 py-1 text-xs rounded-lg border ${
+                          (card.backgroundStyle || 'solid') === 'solid'
+                            ? 'bg-blue-50 border-blue-500 text-blue-700'
+                            : 'border-gray-300 text-gray-700'
+                        }`}
+                      >
+                        Solid
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => updateCard(card.id, { backgroundStyle: 'blur' })}
+                        className={`px-2 py-1 text-xs rounded-lg border ${
+                          card.backgroundStyle === 'blur'
+                            ? 'bg-blue-50 border-blue-500 text-blue-700'
+                            : 'border-gray-300 text-gray-700'
+                        }`}
+                      >
+                        Blur
+                      </button>
+                    </div>
+                  </div>
+
                   <button
                     onClick={() => setEditingCard(null)}
                     className="text-sm text-blue-600 hover:text-blue-700"
@@ -841,6 +954,36 @@ export function ExperienceEditor({
           onChange={(e) => onChange({ ...section, title: e.target.value })}
           placeholder="My Experience / Work History"
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Title Color</label>
+        <input
+          type="color"
+          value={section.titleColor || '#1F2937'}
+          onChange={(e) => onChange({ ...section, titleColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Card Title Color</label>
+        <input
+          type="color"
+          value={section.cardTitleColor || '#1F2937'}
+          onChange={(e) => onChange({ ...section, cardTitleColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Card Description Color</label>
+        <input
+          type="color"
+          value={section.cardDescriptionColor || '#6B7280'}
+          onChange={(e) => onChange({ ...section, cardDescriptionColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
         />
       </div>
 
@@ -1035,6 +1178,36 @@ export function ProjectsEditor({
       </div>
 
       <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Title Color</label>
+        <input
+          type="color"
+          value={section.titleColor || '#1F2937'}
+          onChange={(e) => onChange({ ...section, titleColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Item Title Color</label>
+        <input
+          type="color"
+          value={section.itemTitleColor || '#1F2937'}
+          onChange={(e) => onChange({ ...section, itemTitleColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Item Description Color</label>
+        <input
+          type="color"
+          value={section.itemDescriptionColor || '#6B7280'}
+          onChange={(e) => onChange({ ...section, itemDescriptionColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
+        />
+      </div>
+
+      <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">Background Color</label>
         <input
           type="color"
@@ -1162,6 +1335,44 @@ export function ProjectsEditor({
                     className="w-full px-2 py-1.5 border border-gray-300 rounded text-xs"
                   />
 
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Card Background Color</label>
+                    <input
+                      type="color"
+                      value={item.backgroundColor || '#FFFFFF'}
+                      onChange={(e) => updateItem(item.id, { backgroundColor: e.target.value })}
+                      className="w-full h-8 rounded border border-gray-300"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs text-gray-600 mb-1">Background Style</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        onClick={() => updateItem(item.id, { backgroundStyle: 'solid' })}
+                        className={`px-2 py-1 text-xs rounded-lg border ${
+                          (item.backgroundStyle || 'solid') === 'solid'
+                            ? 'bg-blue-50 border-blue-500 text-blue-700'
+                            : 'border-gray-300 text-gray-700'
+                        }`}
+                      >
+                        Solid
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => updateItem(item.id, { backgroundStyle: 'blur' })}
+                        className={`px-2 py-1 text-xs rounded-lg border ${
+                          item.backgroundStyle === 'blur'
+                            ? 'bg-blue-50 border-blue-500 text-blue-700'
+                            : 'border-gray-300 text-gray-700'
+                        }`}
+                      >
+                        Blur
+                      </button>
+                    </div>
+                  </div>
+
                   <button
                     onClick={() => setEditingItem(null)}
                     className="text-sm text-blue-600 hover:text-blue-700"
@@ -1286,6 +1497,36 @@ export function TestimonialsEditor({
           value={section.title}
           onChange={(e) => onChange({ ...section, title: e.target.value })}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Title Color</label>
+        <input
+          type="color"
+          value={section.titleColor || '#1F2937'}
+          onChange={(e) => onChange({ ...section, titleColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Card Text Color</label>
+        <input
+          type="color"
+          value={section.cardTextColor || '#1F2937'}
+          onChange={(e) => onChange({ ...section, cardTextColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Card Author Color</label>
+        <input
+          type="color"
+          value={section.cardAuthorColor || '#6B7280'}
+          onChange={(e) => onChange({ ...section, cardAuthorColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
         />
       </div>
 
@@ -1425,6 +1666,26 @@ export function ContactEditor({
           value={section.title}
           onChange={(e) => onChange({ ...section, title: e.target.value })}
           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Title Color</label>
+        <input
+          type="color"
+          value={section.titleColor || '#1F2937'}
+          onChange={(e) => onChange({ ...section, titleColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">Description Color</label>
+        <input
+          type="color"
+          value={section.descriptionColor || '#6B7280'}
+          onChange={(e) => onChange({ ...section, descriptionColor: e.target.value })}
+          className="w-full h-10 rounded border border-gray-300"
         />
       </div>
 
