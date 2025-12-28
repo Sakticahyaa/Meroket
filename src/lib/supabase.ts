@@ -98,15 +98,8 @@ export type PreviewData = {
   }>;
 };
 
-// Animation settings for sections
+// Animation settings for sections - simplified to just the animation type
 export type AnimationType = 'none' | 'fade' | 'slideUp' | 'slideDown' | 'slideLeft' | 'slideRight';
-
-export type AnimationSettings = {
-  enabled: boolean;
-  type: AnimationType;
-  duration: number; // in milliseconds
-  delay: number; // in milliseconds
-};
 
 // Text formatting and styling
 export type TextStyle = {
@@ -142,7 +135,7 @@ export type HeroSection = {
   subtitleColor: string;
   titleFont?: string;
   subtitleFont?: string;
-  animation?: AnimationSettings;
+  animation?: AnimationType;
 };
 
 export type AboutSection = {
@@ -163,7 +156,7 @@ export type AboutSection = {
   titleFont?: string;
   descriptionFont?: string;
   font?: string;
-  animation?: AnimationSettings;
+  animation?: AnimationType;
 };
 
 export type SkillCard = {
@@ -187,7 +180,7 @@ export type SkillsSection = {
   backgroundImage?: string;
   titleFont?: string;
   font?: string;
-  animation?: AnimationSettings;
+  animation?: AnimationType;
 };
 
 // Experience Section (renamed from Projects)
@@ -213,7 +206,7 @@ export type ExperienceSection = {
   backgroundImage?: string;
   titleFont?: string;
   font?: string;
-  animation?: AnimationSettings;
+  animation?: AnimationType;
 };
 
 // New Projects Section (referred design - one per row)
@@ -240,7 +233,7 @@ export type ProjectsSection = {
   backgroundImage?: string;
   titleFont?: string;
   font?: string;
-  animation?: AnimationSettings;
+  animation?: AnimationType;
 };
 
 export type TestimonialCard = {
@@ -263,7 +256,7 @@ export type TestimonialsSection = {
   backgroundImage?: string;
   titleFont?: string;
   font?: string;
-  animation?: AnimationSettings;
+  animation?: AnimationType;
 };
 
 export type ContactSection = {
@@ -282,7 +275,7 @@ export type ContactSection = {
   backgroundImage?: string;
   titleFont?: string;
   font?: string;
-  animation?: AnimationSettings;
+  animation?: AnimationType;
 };
 
 export type PortfolioSection =

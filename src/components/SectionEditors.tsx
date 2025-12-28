@@ -336,7 +336,7 @@ export function HeroEditor({
 
       {/* Animation Settings */}
       <AnimationSettings
-        settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
+        value={section.animation || 'none'}
         onChange={(animation) => onChange({ ...section, animation })}
       />
 
@@ -525,7 +525,7 @@ export function AboutEditor({
 
       {/* Animation Settings */}
       <AnimationSettings
-        settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
+        value={section.animation || 'none'}
         onChange={(animation) => onChange({ ...section, animation })}
       />
 
@@ -747,7 +747,7 @@ export function SkillsEditor({
 
       {/* Animation Settings */}
       <AnimationSettings
-        settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
+        value={section.animation || 'none'}
         onChange={(animation) => onChange({ ...section, animation })}
       />
 
@@ -958,7 +958,7 @@ export function ExperienceEditor({
 
       {/* Animation Settings */}
       <AnimationSettings
-        settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
+        value={section.animation || 'none'}
         onChange={(animation) => onChange({ ...section, animation })}
       />
 
@@ -1220,7 +1220,7 @@ export function ProjectsEditor({
 
       {/* Animation Settings */}
       <AnimationSettings
-        settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
+        value={section.animation || 'none'}
         onChange={(animation) => onChange({ ...section, animation })}
       />
 
@@ -1383,7 +1383,7 @@ export function TestimonialsEditor({
 
       {/* Animation Settings */}
       <AnimationSettings
-        settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
+        value={section.animation || 'none'}
         onChange={(animation) => onChange({ ...section, animation })}
       />
 
@@ -1513,7 +1513,7 @@ export function ContactEditor({
 
       {/* Animation Settings */}
       <AnimationSettings
-        settings={section.animation || { enabled: false, type: 'fade', duration: 600, delay: 0 }}
+        value={section.animation || 'none'}
         onChange={(animation) => onChange({ ...section, animation })}
       />
 

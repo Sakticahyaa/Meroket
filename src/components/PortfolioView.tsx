@@ -10,13 +10,14 @@ type PortfolioViewProps = {
 };
 
 // Helper function to generate animation variants
-function getAnimationVariants(animation?: { enabled: boolean; type: string; duration?: number; delay?: number }) {
-  if (!animation?.enabled) {
+function getAnimationVariants(animationType?: string) {
+  if (!animationType || animationType === 'none') {
     return {};
   }
 
-  const duration = (animation.duration || 600) / 1000; // Convert to seconds
-  const delay = (animation.delay || 0) / 1000;
+  // Fixed duration and delay for all animations
+  const duration = 0.6; // 600ms
+  const delay = 0.1; // 100ms
 
   const variants: any = {
     hidden: {},
@@ -29,7 +30,7 @@ function getAnimationVariants(animation?: { enabled: boolean; type: string; dura
     },
   };
 
-  switch (animation.type) {
+  switch (animationType) {
     case 'fade':
       variants.hidden.opacity = 0;
       variants.visible.opacity = 1;
@@ -206,7 +207,7 @@ export function PortfolioView({ slug, onBack }: PortfolioViewProps) {
           const heroData = section;
           const bgStyle = getBackgroundStyle(heroData);
           const heroVariants = getAnimationVariants(heroData.animation);
-          const hasAnimation = heroData.animation?.enabled;
+          const hasAnimation = heroData.animation && heroData.animation !== 'none';
 
           return (
             <section
